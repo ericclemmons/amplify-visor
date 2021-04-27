@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+const spawn = require("cross-spawn");
+const [, , ...args] = process.argv;
+// TODO Use npm if package-lock.json exists
+const command = "yarn";
+
+// Start Amplify Visor server
+require("../server");
+
+// TODO Don't start automatically, but do this via an API call in the dashboard
+// Start subprocess
+// spawn(command, args.length ? args : ["start"], {
+//   stdio: "inherit",
+// });

@@ -1,7 +1,8 @@
 {
-  "name": "with-tailwindcss",
+  "name": "amplify-visor",
   "version": "0.1.0",
   "private": true,
+  "bin": "./bin/amplify-visor",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,9 +12,12 @@
     "@headlessui/react": "^1.1.0",
     "@heroicons/react": "^1.0.1",
     "@tailwindcss/forms": "^0.3.2",
+    "cross-spawn": "^7.0.3",
     "next": "latest",
+    "open": "^8.0.7",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "wait-for-localhost": "^3.3.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.4",
