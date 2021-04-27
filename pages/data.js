@@ -1,9 +1,123 @@
-import { QuestionMarkCircleIcon } from "@heroicons/react/solid";
+import { useMachine } from "@xstate/react";
+import { ExclamationCircleIcon } from "@heroicons/react/outline";
+import { Machine, assign } from "xstate";
 
-export default function Authentication() {
+import { Notification } from "../components/Notification";
+
+const schemaMachine = Machine(
+  {
+    id: "schema",
+    initial: "init",
+    context: {
+      appId: null,
+      url: null,
+    },
+    states: {
+      init: {
+        invoke: {
+          src: "initializeSchema",
+          onDone: {
+            actions: "assignFromClonedSchema",
+            target: "editing",
+          },
+          onError: {
+            actions: "assignError",
+          },
+        },
+      },
+
+      editing: {
+        initial: "idle",
+
+        states: {
+          idle: {
+            on: {
+              SAVE: "saving",
+            },
+          },
+
+          saving: {
+            invoke: {
+              src: "saveSchema",
+              onDone: "idle",
+              onError: {
+                actions: "assignError",
+                target: "idle",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    actions: {
+      assignFromClonedSchema: assign({
+        appId(context, event) {
+          return event.data.clonedAppId;
+        },
+        url(context, event) {
+          return event.data.url;
+        },
+      }),
+
+      assignError: assign({
+        error(context, event) {
+          return event.data.message;
+        },
+      }),
+    },
+
+    services: {
+      async initializeSchema(context, event) {
+        // https://sandbox.amplifyapp.com/schema-design/d96b33a6-a2e8-41b8-8f01-322317f1f1d8/clone
+        const appId = "d96b33a6-a2e8-41b8-8f01-322317f1f1d8";
+
+        const res = await fetch("/api/clone-schema", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ appId }),
+        });
+
+        if (res.ok) {
+          return await res.json();
+        }
+
+        throw new Error(await res.text());
+      },
+
+      async saveSchema(context, event) {
+        const { appId } = context;
+
+        const res = await fetch("/api/save-schema", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ appId }),
+        });
+
+        if (res.ok) {
+          return await res.json();
+        }
+
+        throw new Error(await res.text());
+      },
+    },
+  }
+);
+
+export default function Data() {
+  const [state, send] = useMachine(schemaMachine);
+  const { error, url } = state.context;
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    send("SAVE");
+  };
+
   return (
     <section aria-labelledby="payment_details_heading">
-      <form action="#" method="POST">
+      <form onSubmit={handleSubmit}>
         <div className="shadow sm:rounded-md sm:overflow-hidden">
           <div className="px-4 py-6 bg-white sm:p-6">
             <div>
@@ -13,139 +127,62 @@ export default function Authentication() {
               >
                 Data
               </h2>
-              <p className="mt-1 text-sm text-gray-500">TODO</p>
+              <p className="mt-1 text-sm text-gray-500">
+                View and edit your app's data models, add fields, and
+                relationships.
+              </p>
             </div>
 
-            <div className="grid grid-cols-4 gap-6 mt-6">
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="first_name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  First name
-                </label>
-                <input
-                  type="text"
-                  name="first_name"
-                  id="first_name"
-                  autoComplete="cc-given-name"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div>
+            {error && (
+              <Notification
+                Icon={ExclamationCircleIcon}
+                title={"Error"}
+                description={error}
+              />
+            )}
 
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="last_name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Last name
-                </label>
-                <input
-                  type="text"
-                  name="last_name"
-                  id="last_name"
-                  autoComplete="cc-family-name"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div>
-
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="email_address"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email address
-                </label>
-                <input
-                  type="text"
-                  name="email_address"
-                  id="email_address"
-                  autoComplete="email"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div>
-
-              <div className="col-span-4 sm:col-span-1">
-                <label
-                  htmlFor="expiration_date"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Expration date
-                </label>
-                <input
-                  type="text"
-                  name="expiration_date"
-                  id="expiration_date"
-                  autoComplete="cc-exp"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                  placeholder="MM / YY"
-                />
-              </div>
-
-              <div className="col-span-4 sm:col-span-1">
-                <label
-                  htmlFor="security_code"
-                  className="flex items-center text-sm font-medium text-gray-700"
-                >
-                  <span>Security code</span>
-                  <QuestionMarkCircleIcon
-                    className="flex-shrink-0 w-5 h-5 ml-1 text-gray-300"
-                    aria-hidden="true"
-                  />
-                </label>
-                <input
-                  type="text"
-                  name="security_code"
-                  id="security_code"
-                  autoComplete="cc-csc"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div>
-
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="country"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Country / Region
-                </label>
-                <select
-                  id="country"
-                  name="country"
-                  autoComplete="country"
-                  className="block w-full px-3 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                >
-                  <option>United States</option>
-                  <option>Canada</option>
-                  <option>Mexico</option>
-                </select>
-              </div>
-
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="postal_code"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  ZIP / Postal
-                </label>
-                <input
-                  type="text"
-                  name="postal_code"
-                  id="postal_code"
-                  autoComplete="postal-code"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div>
+            <div className="mt-6 border border-gray-300 shadow-md">
+              {state.matches("init") ? (
+                <h3 className="p-12 text-3xl text-center animate-pulse">
+                  Initializing schema...
+                </h3>
+              ) : (
+                <div style={{ height: "100vh" }}>
+                  <iframe
+                    src={url}
+                    className="relative w-full"
+                    style={{
+                      top: -165,
+                      height: "calc(100vh + 190px + 165px)",
+                      clipPath:
+                        "polygon(0% 165px, 100% 165px, 100% calc(100% - 190px), 0% calc(100% - 190px))",
+                    }}
+                  ></iframe>
+                </div>
+              )}
             </div>
           </div>
-          <div className="px-4 py-3 text-right bg-gray-50 sm:px-6">
-            <button
-              type="submit"
-              className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-            >
-              Save
-            </button>
-          </div>
+
+          {state.matches("editing") && (
+            <div className="px-4 py-3 text-right bg-gray-50 sm:px-6">
+              {state.matches("editing.saving") ? (
+                <button
+                  disabled
+                  type="submit"
+                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm opacity-75 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 animate-pulse"
+                >
+                  Saving&hellip;
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                >
+                  Save Schema
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </form>
     </section>
