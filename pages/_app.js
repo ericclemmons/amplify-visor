@@ -1,6 +1,4 @@
-import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { QuestionMarkCircleIcon, SearchIcon } from "@heroicons/react/solid";
 import {
   BellIcon,
   CogIcon,
@@ -11,8 +9,10 @@ import {
   ViewGridAddIcon,
   XIcon,
 } from "@heroicons/react/outline";
+import { SearchIcon } from "@heroicons/react/solid";
+import Head from "next/head";
 import { useRouter } from "next/router";
-
+import { Fragment } from "react";
 import "tailwindcss/tailwind.css";
 
 const user = {
@@ -61,6 +61,10 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <Head>
+        <title>Amplify Visor</title>
+      </Head>
+
       <Disclosure as="header" className="bg-white shadow">
         {({ open }) => (
           <>
