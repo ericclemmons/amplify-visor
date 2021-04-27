@@ -11,6 +11,7 @@ import {
   ViewGridAddIcon,
   XIcon,
 } from "@heroicons/react/outline";
+import { useRouter } from "next/router";
 
 import "tailwindcss/tailwind.css";
 
@@ -32,20 +33,19 @@ const userNavigation = [
   { name: "Sign out", href: "#" },
 ];
 const subNavigation = [
-  { name: "Project", href: "/", icon: UserCircleIcon, current: false },
-  { name: "Analytics", href: "#", icon: CogIcon, current: false },
+  { name: "Project", href: "/", icon: UserCircleIcon },
+  { name: "Analytics", href: "#", icon: CogIcon },
   {
     name: "Authentication",
     href: "/authentication",
     icon: KeyIcon,
-    current: false,
   },
-  { name: "Data", href: "#", icon: ViewGridAddIcon, current: false },
-  { name: "Interactions", href: "#", icon: CreditCardIcon, current: false },
-  { name: "Predictions", href: "#", icon: CreditCardIcon, current: false },
-  { name: "PubSub", href: "#", icon: CreditCardIcon, current: false },
-  { name: "Push Notifications", href: "#", icon: BellIcon, current: false },
-  { name: "Storage", href: "#", icon: CreditCardIcon, current: false },
+  { name: "Data", href: "/data", icon: ViewGridAddIcon },
+  { name: "Interactions", href: "#", icon: CreditCardIcon },
+  { name: "Predictions", href: "#", icon: CreditCardIcon },
+  { name: "PubSub", href: "#", icon: CreditCardIcon },
+  { name: "Push Notifications", href: "#", icon: BellIcon },
+  { name: "Storage", href: "#", icon: CreditCardIcon },
 ];
 
 function classNames(...classes) {
@@ -53,6 +53,12 @@ function classNames(...classes) {
 }
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter();
+
+  function isCurrent(item) {
+    return item.href === router.asPath;
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Disclosure as="header" className="bg-white shadow">
@@ -240,16 +246,16 @@ function MyApp({ Component, pageProps }) {
                   key={item.name}
                   href={item.href}
                   className={classNames(
-                    item.current
+                    isCurrent(item)
                       ? "bg-gray-50 text-orange-600 hover:bg-white"
                       : "text-gray-900 hover:text-gray-900 hover:bg-gray-50",
                     "group rounded-md px-3 py-2 flex items-center text-sm font-medium"
                   )}
-                  aria-current={item.current ? "page" : undefined}
+                  aria-current={isCurrent(item) ? "page" : undefined}
                 >
                   <item.icon
                     className={classNames(
-                      item.current
+                      isCurrent(item)
                         ? "text-orange-500"
                         : "text-gray-400 group-hover:text-gray-500",
                       "flex-shrink-0 -ml-1 mr-3 h-6 w-6"
