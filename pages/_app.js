@@ -64,7 +64,7 @@ function MyApp({ Component, pageProps }) {
       <Disclosure as="header" className="bg-white shadow">
         {({ open }) => (
           <>
-            <div className="px-2 mx-auto max-w-7xl sm:px-4 lg:divide-y lg:divide-gray-200 lg:px-8">
+            <div className="px-2 mx-auto sm:px-4 lg:divide-y lg:divide-gray-200 lg:px-8">
               <div className="relative flex justify-between h-16">
                 <div className="relative z-10 flex px-2 lg:px-0">
                   <div className="flex items-center flex-shrink-0">
@@ -237,7 +237,7 @@ function MyApp({ Component, pageProps }) {
         )}
       </Disclosure>
 
-      <main className="pb-10 mx-auto max-w-7xl lg:py-12 lg:px-8">
+      <main className="pb-10 mx-auto lg:py-12 lg:px-8">
         <div className="lg:grid lg:grid-cols-12 lg:gap-x-5">
           <aside className="px-2 py-6 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3">
             <nav className="space-y-1">
