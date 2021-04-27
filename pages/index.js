@@ -1,48 +1,7 @@
-import { Fragment, useState } from "react";
-import {
-  Disclosure,
-  Menu,
-  RadioGroup,
-  Switch,
-  Transition,
-} from "@headlessui/react";
-import { QuestionMarkCircleIcon, SearchIcon } from "@heroicons/react/solid";
-import {
-  BellIcon,
-  CogIcon,
-  CreditCardIcon,
-  KeyIcon,
-  MenuIcon,
-  UserCircleIcon,
-  ViewGridAddIcon,
-  XIcon,
-} from "@heroicons/react/outline";
+import { useState } from "react";
+import { RadioGroup, Switch } from "@headlessui/react";
+import { QuestionMarkCircleIcon } from "@heroicons/react/solid";
 
-const user = {
-  name: "Lisa Marie",
-  email: "lisamarie@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=80",
-};
-const navigation = [
-  { name: "Dashboard", href: "#" },
-  { name: "Jobs", href: "#" },
-  { name: "Applicants", href: "#" },
-  { name: "Company", href: "#" },
-];
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-];
-const subNavigation = [
-  { name: "Profile", href: "#", icon: UserCircleIcon, current: false },
-  { name: "Account", href: "#", icon: CogIcon, current: false },
-  { name: "Password", href: "#", icon: KeyIcon, current: false },
-  { name: "Notifications", href: "#", icon: BellIcon, current: false },
-  { name: "Plan & Billing", href: "#", icon: CreditCardIcon, current: true },
-  { name: "Integrations", href: "#", icon: ViewGridAddIcon, current: false },
-];
 const plans = [
   {
     name: "Startup",
@@ -94,12 +53,9 @@ export default function Example() {
                   id="payment_details_heading"
                   className="text-lg font-medium leading-6 text-gray-900"
                 >
-                  Payment details
+                  Project
                 </h2>
-                <p className="mt-1 text-sm text-gray-500">
-                  Update your billing information. Please note that updating
-                  your location could affect your tax rates.
-                </p>
+                <p className="mt-1 text-sm text-gray-500">TODO</p>
               </div>
 
               <div className="grid grid-cols-4 gap-6 mt-6">

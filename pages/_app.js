@@ -32,12 +32,20 @@ const userNavigation = [
   { name: "Sign out", href: "#" },
 ];
 const subNavigation = [
-  { name: "Profile", href: "#", icon: UserCircleIcon, current: false },
-  { name: "Account", href: "#", icon: CogIcon, current: false },
-  { name: "Password", href: "#", icon: KeyIcon, current: false },
-  { name: "Notifications", href: "#", icon: BellIcon, current: false },
-  { name: "Plan & Billing", href: "#", icon: CreditCardIcon, current: true },
-  { name: "Integrations", href: "#", icon: ViewGridAddIcon, current: false },
+  { name: "Project", href: "/", icon: UserCircleIcon, current: false },
+  { name: "Analytics", href: "#", icon: CogIcon, current: false },
+  {
+    name: "Authentication",
+    href: "/authentication",
+    icon: KeyIcon,
+    current: false,
+  },
+  { name: "Data", href: "#", icon: ViewGridAddIcon, current: false },
+  { name: "Interactions", href: "#", icon: CreditCardIcon, current: false },
+  { name: "Predictions", href: "#", icon: CreditCardIcon, current: false },
+  { name: "PubSub", href: "#", icon: CreditCardIcon, current: false },
+  { name: "Push Notifications", href: "#", icon: BellIcon, current: false },
+  { name: "Storage", href: "#", icon: CreditCardIcon, current: false },
 ];
 
 function classNames(...classes) {
@@ -46,7 +54,7 @@ function classNames(...classes) {
 
 function MyApp({ Component, pageProps }) {
   return (
-    <div className="bg-gray-100">
+    <div className="min-h-screen bg-gray-100">
       <Disclosure as="header" className="bg-white shadow">
         {({ open }) => (
           <>
