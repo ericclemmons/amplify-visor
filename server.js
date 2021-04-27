@@ -20,11 +20,10 @@ app
       const parsedUrl = parse(req.url, true);
       const { pathname, query } = parsedUrl;
 
-      if (pathname === "/api") {
-        handle(req, res);
-      } else {
-        app.render(req, res, "/", query);
-      }
+      // For any routes that requires a dedicated server process (instead of Next.js API routes),
+      // see: https://nextjs.org/docs/advanced-features/custom-server
+
+      handle(req, res);
     }).listen(PORT, async (err) => {
       if (err) throw err;
 
