@@ -63,10 +63,12 @@ function MyApp({ Component, pageProps }) {
                 <div className="relative z-10 flex px-2 lg:px-0">
                   <div className="flex items-center flex-shrink-0">
                     <img
-                      className="block w-auto h-8"
-                      src="https://tailwindui.com/img/logos/workflow-mark-orange-500.svg"
+                      className="block w-auto h-8 pr-3"
+                      src="https://docs.amplify.aws/assets/logo-dark.svg"
                       alt="Workflow"
                     />
+
+                    <h1 className="text-lg text-orange-500">Amplify Visor</h1>
                   </div>
                 </div>
                 <div className="relative z-0 flex items-center justify-center flex-1 px-2 sm:absolute sm:inset-0">
