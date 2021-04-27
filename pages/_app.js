@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { QuestionMarkCircleIcon, SearchIcon } from "@heroicons/react/solid";
+import { SearchIcon } from "@heroicons/react/solid";
 import {
   BellIcon,
   CogIcon,
@@ -11,6 +11,7 @@ import {
   ViewGridAddIcon,
   XIcon,
 } from "@heroicons/react/outline";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 import "tailwindcss/tailwind.css";
@@ -171,13 +172,11 @@ function MyApp({ Component, pageProps }) {
                 aria-label="Global"
               >
                 {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-900 rounded-md hover:bg-gray-50 hover:text-gray-900"
-                  >
-                    {item.name}
-                  </a>
+                  <Link key={item.name} href={item.href}>
+                    <a className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-900 rounded-md hover:bg-gray-50 hover:text-gray-900">
+                      {item.name}
+                    </a>
+                  </Link>
                 ))}
               </nav>
             </div>
@@ -189,13 +188,11 @@ function MyApp({ Component, pageProps }) {
             >
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="block px-3 py-2 text-base font-medium text-gray-900 rounded-md hover:bg-gray-50 hover:text-gray-900"
-                  >
-                    {item.name}
-                  </a>
+                  <Link key={item.name} href={item.href}>
+                    <a className="block px-3 py-2 text-base font-medium text-gray-900 rounded-md hover:bg-gray-50 hover:text-gray-900">
+                      {item.name}
+                    </a>
+                  </Link>
                 ))}
               </div>
               <div className="pt-4 pb-3 border-t border-gray-200">
@@ -222,13 +219,11 @@ function MyApp({ Component, pageProps }) {
                 </div>
                 <div className="px-2 mt-3 space-y-1">
                   {userNavigation.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="block px-3 py-2 text-base font-medium text-gray-500 rounded-md hover:bg-gray-50 hover:text-gray-900"
-                    >
-                      {item.name}
-                    </a>
+                    <Link key={item.name} href={item.href}>
+                      <a className="block px-3 py-2 text-base font-medium text-gray-500 rounded-md hover:bg-gray-50 hover:text-gray-900">
+                        {item.name}
+                      </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -242,28 +237,28 @@ function MyApp({ Component, pageProps }) {
           <aside className="px-2 py-6 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3">
             <nav className="space-y-1">
               {subNavigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={classNames(
-                    isCurrent(item)
-                      ? "bg-gray-50 text-orange-600 hover:bg-white"
-                      : "text-gray-900 hover:text-gray-900 hover:bg-gray-50",
-                    "group rounded-md px-3 py-2 flex items-center text-sm font-medium"
-                  )}
-                  aria-current={isCurrent(item) ? "page" : undefined}
-                >
-                  <item.icon
+                <Link key={item.name} href={item.href}>
+                  <a
                     className={classNames(
                       isCurrent(item)
-                        ? "text-orange-500"
-                        : "text-gray-400 group-hover:text-gray-500",
-                      "flex-shrink-0 -ml-1 mr-3 h-6 w-6"
+                        ? "bg-gray-50 text-orange-600 hover:bg-white"
+                        : "text-gray-900 hover:text-gray-900 hover:bg-gray-50",
+                      "group rounded-md px-3 py-2 flex items-center text-sm font-medium"
                     )}
-                    aria-hidden="true"
-                  />
-                  <span className="truncate">{item.name}</span>
-                </a>
+                    aria-current={isCurrent(item) ? "page" : undefined}
+                  >
+                    <item.icon
+                      className={classNames(
+                        isCurrent(item)
+                          ? "text-orange-500"
+                          : "text-gray-400 group-hover:text-gray-500",
+                        "flex-shrink-0 -ml-1 mr-3 h-6 w-6"
+                      )}
+                      aria-hidden="true"
+                    />
+                    <span className="truncate">{item.name}</span>
+                  </a>
+                </Link>
               ))}
             </nav>
           </aside>
