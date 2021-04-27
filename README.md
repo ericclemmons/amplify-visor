@@ -2,19 +2,35 @@
 
 ### Local Development
 
-First, clone this project & then install dependencies:
+1. First, clone this project & then install dependencies:
 
-1. `yarn install`
+   ```shell
+   yarn install
+   ```
 
-Next, get `amplify-visor` available globably:
+1. Next, get `amplify-visor` available globally:
 
-1. `yarn link` (so this is available globally)
+   ```shell
+   yarn link
+   ```
 
-If you're testing out the greenfield project creation flow:
+1. Run it locally:
 
-1. `cd /tmp` (for easy creation of projects)
-1. `$(yarn global bin)/amplify-visor`
+   1. If you're working on the UI and don't aren't creating/updating projects, you can use Next.js as usual:
 
-If you're testing out an existing Amplify project, just run:
+      ```shell
+      yarn dev
+      ```
 
-1. `$(yarn global bin)/amplify-visor`
+   1. If you're testing out the greenfield project creation flow:
+
+      ```shell
+      cd /tmp`
+      $(yarn global bin)/amplify-visor
+      ```
+
+   1. If you're testing out an existing Amplify project, just run:
+
+      ```shell
+      $(yarn global bin)/amplify-visor
+      ```
