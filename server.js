@@ -36,6 +36,8 @@ app
 
       const url = `http://localhost:${PORT}`;
 
+      // TODO Launch Chrome in `--app` mode instead of opening:
+      // ❯ /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --new-window --app="http://localhost:3000/" --explicitly-allowed-ports=1337,3000
       console.log(`${WHITE}𝚫 Amplify Visor${RESET} started on ${url}`);
       open(url, { url: true });
     });
