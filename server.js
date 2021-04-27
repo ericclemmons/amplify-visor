@@ -5,13 +5,7 @@ const { parse } = require("url");
 const waitForLocalhost = require("wait-for-localhost");
 
 const dir = __dirname;
-// Test if we're in the monorepo
-const dev =
-  process.env.NODE_ENV === "production"
-    ? false
-    : __dirname.includes("dist")
-    ? false
-    : __dirname.includes("amplify-visor");
+const dev = process.env.NODE_ENV === "development" ? true : false;
 
 const { PORT = 1337 } = process.env;
 const WHITE = "\u001b[37;1m";
