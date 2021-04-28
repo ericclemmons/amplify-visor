@@ -287,7 +287,7 @@ export default function Authentication() {
                             type="hidden"
                             id={`${option.id}SignIn`}
                             name={`${option.id}SignIn`}
-                            value={checked}
+                            defaultValue={checked}
                           />
                           <div className="flex items-center text-sm">
                             <span
@@ -371,7 +371,7 @@ Authentication.SocialProviders = () => {
             </Switch>
             <input
               type="hidden"
-              value={socialProvidersEnabled}
+              defaultValue={socialProvidersEnabled}
               name="socialProvidersEnabled"
               id="socialProvidersEnabled"
             />
@@ -436,6 +436,7 @@ Authentication.SocialProviders = () => {
                   name="signin_URI"
                   id="signin_URI"
                   autoComplete="sign-in-uri"
+                  defaultValue="http://localhost:3000/"
                   className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
                 />
               </div>
@@ -452,116 +453,134 @@ Authentication.SocialProviders = () => {
                   name="redirect_URI"
                   id="redirect_URI"
                   autoComplete=""
+                  defaultValue="http://localhost:3000/"
                   className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
                 />
               </div>
             </div>
 
-            {/* Google */}
+            {
+              /* Google */
+              providers.find((val) => val.name === "Google" && val.enabled) && (
+                <div className="grid grid-cols-4 gap-6 mt-12">
+                  <div className="col-span-4 sm:col-span-2">
+                    <label
+                      htmlFor="google_client_ID"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Google Web Client ID for your OAuth flow
+                    </label>
+                    <input
+                      type="text"
+                      name="google_client_ID"
+                      id="google_client_ID"
+                      autoComplete="google-client-id"
+                      className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
+                    />
+                  </div>
 
-            <div className="grid grid-cols-4 gap-6 mt-12">
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="google_client_ID"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Google Web Client ID for your OAuth flow
-                </label>
-                <input
-                  type="text"
-                  name="google_client_ID"
-                  id="google_client_ID"
-                  autoComplete="google-client-id"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div>
+                  <div className="col-span-4 sm:col-span-2">
+                    <label
+                      htmlFor="google_Web_Secret"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Google Web Client Secret for your OAuth flow
+                    </label>
+                    <input
+                      type="text"
+                      name="google_Web_Secret"
+                      id="google_Web_Secret"
+                      autoComplete="google-web-secret"
+                      className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
+                    />
+                  </div>
+                </div>
+              )
+            }
 
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="google_Web_Secret"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Google Web Client Secret for your OAuth flow
-                </label>
-                <input
-                  type="text"
-                  name="google_Web_Secret"
-                  id="google_Web_Secret"
-                  autoComplete="google-web-secret"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div>
-            </div>
+            {
+              /* Facebook */
 
-            {/* Facebook */}
-            <div className="grid grid-cols-4 gap-6 mt-12">
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="facebook_app_ID"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Facebook App ID for your OAuth flow
-                </label>
-                <input
-                  type="text"
-                  name="facebook_app_ID"
-                  id="facebook_app_ID"
-                  autoComplete="facebook-app-id"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div>
+              providers.find(
+                (val) => val.name === "Facebook" && val.enabled
+              ) && (
+                <div className="grid grid-cols-4 gap-6 mt-12">
+                  <div className="col-span-4 sm:col-span-2">
+                    <label
+                      htmlFor="facebook_app_ID"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Facebook App ID for your OAuth flow
+                    </label>
+                    <input
+                      type="text"
+                      name="facebook_app_ID"
+                      id="facebook_app_ID"
+                      autoComplete="facebook-app-id"
+                      className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
+                    />
+                  </div>
 
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="facebook_App_Secret"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Facebook App Secret for your OAuth flow
-                </label>
-                <input
-                  type="text"
-                  name="facebook_App_Secret"
-                  id="facebook_App_Secret"
-                  autoComplete="facebook-app-secret"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div>
-            </div>
+                  <div className="col-span-4 sm:col-span-2">
+                    <label
+                      htmlFor="facebook_App_Secret"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Facebook App Secret for your OAuth flow
+                    </label>
+                    <input
+                      type="text"
+                      name="facebook_App_Secret"
+                      id="facebook_App_Secret"
+                      autoComplete="facebook-app-secret"
+                      className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
+                    />
+                  </div>
+                </div>
+              )
+            }
 
-            {/* Login With Amazon */}
-            <div className="grid grid-cols-4 gap-6 mt-12">
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="amazon_App_ID"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Amazon App ID for your OAuth flow
-                </label>
-                <input
-                  type="text"
-                  name="amazon_App_ID"
-                  id="amazon_App_ID"
-                  autoComplete="amazon-app-id"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div>
+            {
+              /* Login With Amazon */
 
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="amazon_App_Secret"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Amazon App Secret for your OAuth flow
-                </label>
-                <input
-                  type="text"
-                  name="amazon_App_Secret"
-                  id="amazon_App_Secret"
-                  autoComplete="amazon-app-secret"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div>
-            </div>
+              providers.find(
+                (val) => val.name === "Login With Amazon" && val.enabled
+              ) && (
+                <div className="grid grid-cols-4 gap-6 mt-12">
+                  <div className="col-span-4 sm:col-span-2">
+                    <label
+                      htmlFor="amazon_App_ID"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Amazon App ID for your OAuth flow
+                    </label>
+                    <input
+                      type="text"
+                      name="amazon_App_ID"
+                      id="amazon_App_ID"
+                      autoComplete="amazon-app-id"
+                      className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
+                    />
+                  </div>
+
+                  <div className="col-span-4 sm:col-span-2">
+                    <label
+                      htmlFor="amazon_App_Secret"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Amazon App Secret for your OAuth flow
+                    </label>
+                    <input
+                      type="text"
+                      name="amazon_App_Secret"
+                      id="amazon_App_Secret"
+                      autoComplete="amazon-app-secret"
+                      className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
+                    />
+                  </div>
+                </div>
+              )
+            }
           </div>
         </fieldset>
       </div>
@@ -606,7 +625,7 @@ Authentication.Attributes = () => {
             </Switch>
             <input
               type="hidden"
-              value={attributesEnabled}
+              defaultValue={attributesEnabled}
               name="attibutesEnabled"
               id="attributesEnabled"
             />
@@ -726,7 +745,7 @@ function TableWrapper({
                 type="hidden"
                 name={`${option.id}`}
                 id={`${option.id}`}
-                value={enabledList[optionIdx].enabled}
+                defaultValue={enabledList[optionIdx].enabled}
               />
               <svg
                 className="bg-white h-3 w-3 text-indigo-600"
