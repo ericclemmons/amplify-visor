@@ -4,11 +4,12 @@
   "private": true,
   "bin": "./bin/amplify-visor",
   "scripts": {
-    "dev": "NODE_ENV=development ./bin/amplify-visor",
+    "dev": "cd /tmp && NODE_ENV=development $(yarn global bin)/amplify-visor",
     "build": "next build",
-    "start": "NODE_ENV=production ./bin/amplify-visor"
+    "start": "cd /tmp && NODE_ENV=production $(yarn global bin)/amplify-visor"
   },
   "dependencies": {
+    "@aws-sdk/client-amplifybackend": "^3.13.1",
     "@headlessui/react": "^1.1.0",
     "@heroicons/react": "^1.0.1",
     "@tailwindcss/forms": "^0.3.2",
