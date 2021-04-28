@@ -2,6 +2,15 @@ import { useState, useRef } from "react";
 
 import Modal from "../components/Modal";
 
+const createProjectSteps = [
+  {
+    url: "/api/create-react-app",
+  },
+  {
+    url: "/api/install-amplify-deps",
+  },
+];
+
 export default function Project() {
   const formRef = useRef();
   const outputRef = useRef();
@@ -16,24 +25,36 @@ export default function Project() {
     const formData = new FormData(formRef.current);
     const body = JSON.stringify(Object.fromEntries(formData));
 
-    const res = await fetch("/api/create-project", { body, method: "POST" });
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder("utf-8");
+    const method = "POST";
 
-    reader.read().then(function processText({ done, value }) {
-      if (done) {
-        return;
-      }
+    async function submitSteps(step = 0) {
+      const res = await fetch(createProjectSteps[step].url, { body, method });
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder("utf-8");
 
-      setOutput((prev) => prev + `${decoder.decode(value)}\n`);
+      reader.read().then(async function processText({ done, value }) {
+        console.log({ done, step });
+        if (done) {
+          console.log({ step });
+          if (createProjectSteps[step + 1]) {
+            console.log("next step");
+            await submitSteps(step + 1);
+          }
+          return;
+        }
 
-      outputRef.current.scroll({
-        behavior: "smooth",
-        top: outputRef.current.scrollHeight,
+        setOutput((prev) => prev + `${decoder.decode(value)}\n`);
+
+        outputRef.current.scroll({
+          behavior: "smooth",
+          top: outputRef.current.scrollHeight,
+        });
+
+        return reader.read().then(await processText);
       });
+    }
 
-      return reader.read().then(processText);
-    });
+    submitSteps();
   }
 
   function closeModal() {
