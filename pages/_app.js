@@ -13,7 +13,7 @@ import { SearchIcon } from "@heroicons/react/solid";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment } from "react";
+import { Fragment, useLayoutEffect } from "react";
 import "tailwindcss/tailwind.css";
 
 const user = {
@@ -55,6 +55,39 @@ function classNames(...classes) {
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
+
+  useLayoutEffect(() => {
+    if (!window.docsearch) {
+      return console.warn("`docsearch` not found on window");
+    }
+
+    docsearch({
+      apiKey: "24d37f059982b2f5ecf829afe93aed40",
+      indexName: "aws_amplify_new",
+      inputSelector: "#search",
+
+      // https://github.com/aws-amplify/docs/blob/81a8849c6178171988c74d7b53ed29fa4c8f8cac/client/src/utils/transform-search-data.ts#L46
+      transformData(items) {
+        return items.map((item) => {
+          const url = new URL(item.url);
+          const { searchParams } = url;
+          const entries = Object.entries(searchParams);
+          if (entries.length > 0) {
+            const filterMetadataKey = entries[0][1];
+            if (typeof filterMetadataKey === "string") {
+              const label = filterMetadataByOption[filterMetadataKey].label;
+              if (label && item?._highlightResult?.hierarchy?.lvl0) {
+                const newHeading = `${item.hierarchy.lvl0} (${label})`;
+                item.hierarchy.lvl0 = newHeading;
+                item._highlightResult.hierarchy.lvl0.value = newHeading;
+              }
+            }
+          }
+          return item;
+        });
+      },
+    });
+  }, []);
 
   function isCurrent(item) {
     return item.href === router.asPath;
