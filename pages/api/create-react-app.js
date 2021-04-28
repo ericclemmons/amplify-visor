@@ -38,6 +38,9 @@ export default async function createReactApp(req, res) {
       return;
     }
 
+    // Switch to this new directory for the next commands, as if `amplify-visor` was ran in this directory
+    process.chdir(`${project_location}/${project_name}`);
+
     res.end();
   });
 

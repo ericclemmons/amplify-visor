@@ -9,7 +9,6 @@
     "start": "cd /tmp && NODE_ENV=production $(yarn global bin)/amplify-visor"
   },
   "dependencies": {
-    "@aws-sdk/client-amplifybackend": "^3.13.1",
     "@headlessui/react": "^1.1.0",
     "@heroicons/react": "^1.0.1",
     "@tailwindcss/forms": "^0.3.2",
@@ -22,6 +21,7 @@
     "puppeteer-extra": "^3.1.18",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "tree-kill": "^1.2.2",
     "wait-for-localhost": "^3.3.0",
     "xstate": "^4.18.0"
   },

@@ -1,5 +1,7 @@
+import { Switch } from "@headlessui/react";
+import { readFile } from "fs/promises";
 import { kebabCase } from "lodash";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import Modal from "../components/Modal";
 
@@ -16,11 +18,27 @@ const defaultValues = {
   project_name: "amplify-visor-test",
 };
 
-export default function Project({ cwd = "/tmp" }) {
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+export default function Project({ cwd = "/tmp", pkg }) {
   const outputRef = useRef();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [output, setOutput] = useState("");
   const [changed, setChanged] = useState(defaultValues);
+  const [enabled, setEnabled] = useState(pkg ? true : undefined);
+
+  useEffect(() => {
+    // Only fire if it's been explicitly set
+    if (enabled === undefined) return;
+
+    fetch(enabled ? "/api/start-project" : "/api/stop-project", {
+      method: "POST",
+    }).then(() => {
+      if (!enabled) window.close();
+    });
+  }, [enabled]);
 
   function handleChange(event) {
     let { checked, name, type, value } = event.target;
@@ -61,6 +79,10 @@ export default function Project({ cwd = "/tmp" }) {
             console.log("next step");
             await submitSteps(step + 1);
           }
+
+          // This way we can pull in the latest `pkg` data from getServerSideProps
+          window.location.reload();
+
           return;
         }
 
@@ -109,21 +131,36 @@ export default function Project({ cwd = "/tmp" }) {
       <form onChange={handleChange} onSubmit={handleSubmit}>
         <div className="shadow sm:rounded-md sm:overflow-hidden">
           <div className="px-4 py-6 bg-white sm:p-6">
-            <div>
-              <h2
-                id="payment_details_heading"
-                className="text-lg font-medium leading-6 text-gray-900"
-              >
-                Project
-              </h2>
-              <p className="mt-1 text-sm text-gray-500">
-                Manage the underlying framework, language, default editor, &amp;
-                environments
-              </p>
+            <div className="pb-5 border-b border-gray-200 sm:flex sm:items-center sm:justify-between">
+              <h3 className="text-lg font-medium leading-6 text-gray-900">
+                {pkg ? pkg.name : "New Project"}
+              </h3>
+
+              <div className="mt-3 sm:mt-0 sm:ml-4">
+                {pkg && (
+                  <Switch
+                    checked={enabled}
+                    onChange={setEnabled}
+                    className={classNames(
+                      enabled ? "bg-indigo-600" : "bg-gray-200",
+                      "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    )}
+                  >
+                    <span className="sr-only">Use setting</span>
+                    <span
+                      aria-hidden="true"
+                      className={classNames(
+                        enabled ? "translate-x-5" : "translate-x-0",
+                        "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                      )}
+                    />
+                  </Switch>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-4 gap-6 mt-6">
-              <div className="col-span-4 sm:col-span-4">
+              <div className="col-span-4 sm:col-span-4" hidden={pkg}>
                 <label
                   htmlFor="project_name"
                   className="block text-sm font-medium text-gray-700"
@@ -195,7 +232,7 @@ export default function Project({ cwd = "/tmp" }) {
                 </select>
               </div>
 
-              <div className="col-span-4 sm:col-span-2">
+              <div className="col-span-4 sm:col-span-2" hidden={pkg}>
                 <label
                   htmlFor="app_type"
                   className="block text-sm font-medium text-gray-700"
@@ -218,7 +255,7 @@ export default function Project({ cwd = "/tmp" }) {
                 </select>
               </div>
 
-              <div className="col-span-4 sm:col-span-2">
+              <div className="col-span-4 sm:col-span-2" hidden={pkg}>
                 <label
                   htmlFor="framework"
                   className="block text-sm font-medium text-gray-700"
@@ -259,7 +296,7 @@ export default function Project({ cwd = "/tmp" }) {
               type="submit"
               className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
             >
-              Create Amplify App
+              {pkg ? "Update" : "Create"} Amplify App
             </button>
           </div>
         </div>
@@ -269,9 +306,18 @@ export default function Project({ cwd = "/tmp" }) {
 }
 
 export async function getServerSideProps(context) {
+  let pkg = null;
+
+  try {
+    const raw = await readFile("package.json", "utf8");
+
+    pkg = JSON.parse(raw);
+  } catch (error) {}
+
   return {
     props: {
       cwd: process.cwd(),
+      pkg,
     },
   };
 }
