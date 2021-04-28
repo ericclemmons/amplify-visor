@@ -275,7 +275,7 @@ export default function Authentication() {
                             ? "rounded-bl-md rounded-br-md"
                             : "",
                           checked
-                            ? "bg-orange-50 border-orange-200 z-10"
+                            ? "bg-indigo-50 border-indigo-200 z-10"
                             : "border-gray-200",
                           "relative border p-4 flex flex-col cursor-pointer md:pl-4 md:pr-6 md:grid md:grid-cols-2 focus:outline-none"
                         )
@@ -293,7 +293,7 @@ export default function Authentication() {
                             <span
                               className={classNames(
                                 checked
-                                  ? "bg-orange-500 border-transparent"
+                                  ? "bg-indigo-500 border-transparent"
                                   : "bg-white border-gray-300",
                                 active
                                   ? "ring-2 ring-offset-2 ring-gray-900"
@@ -313,7 +313,7 @@ export default function Authentication() {
                           </div>
                           <RadioGroup.Description
                             className={classNames(
-                              checked ? "text-orange-700" : "text-gray-500",
+                              checked ? "text-indigo-700" : "text-gray-500",
                               "ml-6 pl-1 text-sm md:ml-10 md:pl-0 md:text-left"
                             )}
                           >
@@ -356,7 +356,7 @@ Authentication.SocialProviders = () => {
               checked={socialProvidersEnabled}
               onChange={setSocialProvidersEnabled}
               className={classNames(
-                socialProvidersEnabled ? "bg-orange-500" : "bg-gray-200",
+                socialProvidersEnabled ? "bg-indigo-500" : "bg-gray-200",
                 "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors ease-in-out duration-200"
               )}
             >
@@ -591,7 +591,7 @@ Authentication.Attributes = () => {
               checked={attributesEnabled}
               onChange={setAttributesEnabled}
               className={classNames(
-                attributesEnabled ? "bg-orange-500" : "bg-gray-200",
+                attributesEnabled ? "bg-indigo-500" : "bg-gray-200",
                 "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors ease-in-out duration-200"
               )}
             >
