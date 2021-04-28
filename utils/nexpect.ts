@@ -14,16 +14,10 @@ declare global {
 }
 
 import { isRegExp, format } from "util";
-import { Recorder } from "./asciinema-record";
+import { Recorder } from "./asciinema-recorder";
 import { AssertionError } from "assert";
-// import * as strip from "strip-ansi";
-
-const strip = require("strip-ansi");
-// import strip from "strip-ansi";
+import strip from "strip-ansi";
 import { EOL } from "os";
-// var retimer = require("retimer");
-
-// import retimer = require("retimer");
 import retimer from "retimer";
 
 const DEFAULT_NO_OUTPUT_TIMEOUT = 5 * 60 * 1000; // 5 Minutes
@@ -51,7 +45,6 @@ export type Context = {
   params: string[];
   queue: ExecutionStep[];
   stripColors: boolean;
-  stdio: string;
   process: Recorder | undefined;
   noOutputTimeout: number;
   getRecording: () => string;
@@ -83,6 +76,7 @@ export type SpawnOptions = {
   env?: object | any;
   stripColors?: boolean;
   ignoreCase?: boolean;
+  disableCIDetection?: boolean;
 };
 
 function chain(context: Context): ExecutionContext {
@@ -673,12 +667,24 @@ export function nspawn(
 
   // If we have an environment passed in we've to add the current process' environment, otherwised the forked
   // process would not have $PATH and others that is required to run amplify-cli successfully.
-  if (options.env || pushEnv) {
+  // to be able to disable CI detection we do need to pass in a childEnv
+  if (options.env || pushEnv || options.disableCIDetection === true) {
     childEnv = {
       ...process.env,
       ...pushEnv,
       ...options.env,
     };
+
+    // Undo ci-info detection, required for some tests
+    if (options.disableCIDetection === true) {
+      delete childEnv.CI;
+      delete childEnv.CONTINUOUS_INTEGRATION;
+      delete childEnv.BUILD_NUMBER;
+      delete childEnv.TRAVIS;
+      delete childEnv.GITHUB_ACTIONS;
+      delete childEnv.CIRCLECI;
+      delete childEnv.CIRCLE_PULL_REQUEST;
+    }
   }
 
   let context: Context = {
@@ -691,7 +697,6 @@ export function nspawn(
     queue: [],
     stripColors: options.stripColors,
     process: undefined,
-    stdio: options.stdio,
     getRecording: () => {
       if (context.process) {
         return context.process.getRecording();
