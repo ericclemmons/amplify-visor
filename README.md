@@ -14,23 +14,21 @@
    yarn link
    ```
 
-1. Run it locally:
+1. Run it locally in `/tmp`:
 
-   1. If you're working on the UI and don't aren't creating/updating projects, you can use Next.js as usual:
+   ```shell
+   yarn dev
+   ```
 
-      ```shell
-      yarn dev
-      ```
+If you want to see what the `production` build feels like:
 
-   1. If you're testing out the greenfield project creation flow:
+```shell
+yarn build
+yarn start
+```
 
-      ```shell
-      cd /tmp
-      $(yarn global bin)/amplify-visor
-      ```
+If you're testing out an existing Amplify project, just run the following in your project:
 
-   1. If you're testing out an existing Amplify project, just run:
-
-      ```shell
-      $(yarn global bin)/amplify-visor
-      ```
+```shell
+$(yarn global bin)/amplify-visor
+```
