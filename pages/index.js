@@ -95,7 +95,10 @@ export default function Project() {
               >
                 Project
               </h2>
-              <p className="mt-1 text-sm text-gray-500">TODO</p>
+              <p className="mt-1 text-sm text-gray-500">
+                Manage the underlying framework, language, default editor, &amp;
+                environments
+              </p>
             </div>
 
             <div className="grid grid-cols-4 gap-6 mt-6">
