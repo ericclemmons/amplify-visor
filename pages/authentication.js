@@ -201,7 +201,7 @@ export default function Authentication() {
 
       setOutput((prev) => prev + `${decoder.decode(value)}\n`);
 
-      outputRef.current.scroll({
+      outputRef.current?.scroll({
         behavior: "smooth",
         top: outputRef.current.scrollHeight,
       });
@@ -213,28 +213,31 @@ export default function Authentication() {
   }
   return (
     <>
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        buttons={
-          <>
-            <button
-              type="button"
-              className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-              onClick={closeModal}
-            >
-              Close
-            </button>
-          </>
-        }
-      >
-        <pre
-          ref={outputRef}
-          className="p-6 overflow-y-auto font-mono text-sm subpixel-antialiased text-white bg-gray-800 rounded-md shadow-inner h-96"
+      {isModalOpen && (
+        <Modal
+          isOpen={true}
+          onClose={closeModal}
+          buttons={
+            <>
+              <button
+                type="button"
+                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                onClick={closeModal}
+              >
+                Close
+              </button>
+            </>
+          }
         >
-          {output}
-        </pre>
-      </Modal>
+          <pre
+            ref={outputRef}
+            className="p-6 overflow-y-auto font-mono text-sm subpixel-antialiased text-white bg-gray-800 rounded-md shadow-inner h-96"
+          >
+            {output}
+          </pre>
+        </Modal>
+      )}
+
       <form onSubmit={handleSubmit}>
         <section aria-labelledby="option_heading">
           <div className="px-4 py-3 text-right bg-gray-50 sm:px-6">
