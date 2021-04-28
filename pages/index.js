@@ -6,15 +6,6 @@ import { ExternalLinkIcon } from "@heroicons/react/solid";
 
 import Modal from "../components/Modal";
 
-const createProjectSteps = [
-  {
-    url: "/api/create-react-app",
-  },
-  {
-    url: "/api/install-amplify-deps",
-  },
-];
-
 const defaultValues = {
   project_name: "amplify-visor-test",
 };
@@ -23,7 +14,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Project({ cwd = "/tmp", pkg }) {
+export default function Project({ awsExports, cwd = "/tmp", pkg }) {
   const outputRef = useRef();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [output, setOutput] = useState("");
@@ -65,6 +56,24 @@ export default function Project({ cwd = "/tmp", pkg }) {
     event.preventDefault();
     setOutput("");
     setIsModalOpen(true);
+
+    const createProjectSteps = [
+      {
+        enabled: !pkg,
+        title: "Create React App",
+        url: "/api/create-react-app",
+      },
+      {
+        enabled: !awsExports,
+        title: "Initialize Amplify",
+        url: "/api/amplify-init",
+      },
+      {
+        enabled: true,
+        title: "Install Amplify Dependencies",
+        url: "/api/install-amplify-deps",
+      },
+    ].filter((step) => step.enabled);
 
     const formData = new FormData(event.target);
     const body = JSON.stringify(Object.fromEntries(formData));
@@ -312,7 +321,7 @@ export default function Project({ cwd = "/tmp", pkg }) {
               type="submit"
               className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
             >
-              {pkg ? "Update" : "Create"} Amplify App
+              {awsExports ? "Update" : "Create"} Amplify App
             </button>
           </div>
         </div>
@@ -322,16 +331,20 @@ export default function Project({ cwd = "/tmp", pkg }) {
 }
 
 export async function getServerSideProps(context) {
+  let awsExports = null;
   let pkg = null;
 
   try {
-    const raw = await readFile("package.json", "utf8");
+    awsExports = await readFile("src/aws-exports.js");
+  } catch (error) {}
 
-    pkg = JSON.parse(raw);
+  try {
+    pkg = JSON.parse(await readFile("package.json", "utf8"));
   } catch (error) {}
 
   return {
     props: {
+      awsExports,
       cwd: process.cwd(),
       pkg,
     },
