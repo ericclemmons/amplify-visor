@@ -2,6 +2,7 @@ import { Switch } from "@headlessui/react";
 import { readFile } from "fs/promises";
 import { kebabCase } from "lodash";
 import { useState, useRef, useEffect } from "react";
+import { ExternalLinkIcon } from "@heroicons/react/solid";
 
 import Modal from "../components/Modal";
 
@@ -54,6 +55,10 @@ export default function Project({ cwd = "/tmp", pkg }) {
       ...changed,
       [name]: value,
     }));
+  }
+
+  function openInIDE() {
+    fetch("/api/launch-editor", { method: "POST" });
   }
 
   async function handleSubmit(event) {
@@ -133,7 +138,18 @@ export default function Project({ cwd = "/tmp", pkg }) {
           <div className="px-4 py-6 bg-white sm:p-6">
             <div className="pb-5 border-b border-gray-200 sm:flex sm:items-center sm:justify-between">
               <h3 className="text-lg font-medium leading-6 text-gray-900">
-                {pkg ? pkg.name : "New Project"}
+                {pkg ? (
+                  <button
+                    className="flex text-indigo-700 underline"
+                    onClick={openInIDE}
+                    type="button"
+                  >
+                    {pkg.name}
+                    <ExternalLinkIcon className="w-6 h-6" />
+                  </button>
+                ) : (
+                  "New Project"
+                )}
               </h3>
 
               <div className="mt-3 sm:mt-0 sm:ml-4">
