@@ -1,3 +1,4 @@
+import { kebabCase } from "lodash";
 import { useState, useRef } from "react";
 
 import Modal from "../components/Modal";
@@ -11,18 +12,38 @@ const createProjectSteps = [
   },
 ];
 
-export default function Project() {
-  const formRef = useRef();
+const defaultValues = {
+  project_name: "amplify-visor-test",
+};
+
+export default function Project({ cwd = "/tmp" }) {
   const outputRef = useRef();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [output, setOutput] = useState("");
+  const [changed, setChanged] = useState(defaultValues);
+
+  function handleChange(event) {
+    let { checked, name, type, value } = event.target;
+
+    switch (type) {
+      case "checkbox":
+        if (!checked) value = undefined;
+        break;
+      default:
+    }
+
+    setChanged((changed) => ({
+      ...changed,
+      [name]: value,
+    }));
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
     setOutput("");
     setIsModalOpen(true);
 
-    const formData = new FormData(formRef.current);
+    const formData = new FormData(event.target);
     const body = JSON.stringify(Object.fromEntries(formData));
 
     const method = "POST";
@@ -85,7 +106,7 @@ export default function Project() {
           {output}
         </pre>
       </Modal>
-      <form onSubmit={handleSubmit} ref={formRef}>
+      <form onChange={handleChange} onSubmit={handleSubmit}>
         <div className="shadow sm:rounded-md sm:overflow-hidden">
           <div className="px-4 py-6 bg-white sm:p-6">
             <div>
@@ -102,7 +123,7 @@ export default function Project() {
             </div>
 
             <div className="grid grid-cols-4 gap-6 mt-6">
-              <div className="col-span-4 sm:col-span-2">
+              <div className="col-span-4 sm:col-span-4">
                 <label
                   htmlFor="project_name"
                   className="block text-sm font-medium text-gray-700"
@@ -113,12 +134,19 @@ export default function Project() {
                   type="text"
                   name="project_name"
                   id="project_name"
-                  defaultValue="amplify-visor-test"
+                  defaultValue={defaultValues.project_name}
+                  placeholder="my-amplify-app"
                   className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
                 />
+                <p
+                  className="mt-2 font-mono text-xs text-gray-500"
+                  id="email-description"
+                >
+                  {cwd}/{kebabCase(changed.project_name)}
+                </p>
               </div>
 
-              <div className="col-span-4 sm:col-span-2">
+              <div className="col-span-4 sm:col-span-2" hidden>
                 <label
                   htmlFor="project_location"
                   className="block text-sm font-medium text-gray-700"
@@ -126,10 +154,10 @@ export default function Project() {
                   Project location
                 </label>
                 <input
-                  type="text"
+                  type="hidden"
                   name="project_location"
                   id="project_location"
-                  defaultValue="/tmp"
+                  value={cwd}
                   className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
                 />
               </div>
@@ -238,4 +266,12 @@ export default function Project() {
       </form>
     </section>
   );
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      cwd: process.cwd(),
+    },
+  };
 }
