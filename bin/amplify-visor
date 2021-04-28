@@ -1,15 +1,25 @@
 #!/usr/bin/env node
 
-const spawn = require("cross-spawn");
-const [, , ...args] = process.argv;
-// TODO Use npm if package-lock.json exists
-const command = "yarn";
+const execa = require("execa");
+const waitForLocalhost = require("wait-for-localhost");
 
-// Start Amplify Visor server
-require("../server");
+// Start Amplify Visor on :1337 using local Next.js
+execa("next", ["dev", "-p", "1337"], {
+  preferLocal: true,
+  stdio: "inherit",
+  env: { PORT: 1337 },
+});
 
-// TODO Don't start automatically, but do this via an API call in the dashboard
-// Start subprocess
-// spawn(command, args.length ? args : ["start"], {
-//   stdio: "inherit",
-// });
+waitForLocalhost({ port: 1337 }).then(() => {
+  execa(
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    [
+      "--new-window",
+      "--app=http://localhost:1337/",
+      "--explicitly-allowed-ports=1337",
+    ],
+    {
+      stdio: "inherit",
+    }
+  );
+});
