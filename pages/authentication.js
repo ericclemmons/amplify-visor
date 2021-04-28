@@ -1,11 +1,30 @@
 import { RadioGroup, Switch } from "@headlessui/react";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
+import Modal from "../components/Modal";
 
 const providers = [
-  { name: "Google", svg: "google-icon.svg" },
-  { name: "Facebook", svg: "facebook-icon.svg" },
-  { name: "Login With Amazon", svg: "amazon-icon.svg" },
+  {
+    name: "Google",
+    svg: "google-icon.svg",
+
+    enabled: false,
+    id: "googleProvider",
+  },
+  {
+    name: "Facebook",
+    svg: "facebook-icon.svg",
+
+    enabled: false,
+    id: "facebookProvider",
+  },
+  {
+    name: "Login With Amazon",
+    svg: "amazon-icon.svg",
+
+    enabled: false,
+    id: "loginWithAmazonProvider",
+  },
 ];
 
 const attributeSupports = {
@@ -27,86 +46,103 @@ const attributeOptions = [
     name: "Address",
     description: attributeSupports.notSupportedGoogleFacebookAmazon,
     enabled: false,
+    id: "addressAttribute",
   },
   {
     name: "Birthdate",
     description: attributeSupports.notSupportedAmazon,
     enabled: false,
+    id: "birthdateAttribute",
   },
   {
     name: "Email",
     description: "",
     enabled: false,
+    id: "emailAttribute",
   },
   {
     name: "Family Name",
     description: attributeSupports.notSupportedAmazon,
     enabled: false,
+    id: "familyNameAttribute",
   },
   {
     name: "Middle Name",
     description: attributeSupports.notSupportedGoogleAmazon,
     enabled: false,
+    id: "middleNameAttribute",
   },
   {
     name: "Gender",
     description: attributeSupports.notSupportedAmazon,
     enabled: false,
+    id: "genderAttribute",
   },
   {
     name: "Locale",
     description: attributeSupports.notSupportedFacebookGoogle,
     enabled: false,
+    id: "localeAttribute",
   },
   {
     name: "Given Name",
     description: attributeSupports.notSupportedAmazon,
     enabled: false,
+    id: "givenNameAttribute",
   },
   {
     name: "Name",
     description: "",
     enabled: false,
+    id: "nameAttribute",
   },
   {
     name: "Nickname",
     description: attributeSupports.notSupportedGoogleFacebookAmazon,
     enabled: false,
+    id: "nicknameAttribute",
   },
   {
     name: "Phone Number",
     description: attributeSupports.notSupportedFacebookAmazon,
     enabled: false,
+    id: "phoneNumberAttribute",
   },
   {
     name: "Preferred Username",
     description: attributeSupports.notSupportedGoogleFacebookAmazon,
     enabled: false,
+    id: "preferredUsernameAttribute",
   },
   {
     name: "Picture",
     description: attributeSupports.notSupportedAmazon,
     enabled: false,
+    id: "pictureAttribute",
   },
   {
     name: "Profile",
     description: attributeSupports.notSupportedGoogleFacebookAmazon,
     enabled: false,
+    id: "profileAttribute",
   },
   {
     name: "Updated At",
     description: attributeSupports.notSupportedGoogleFacebookAmazon,
     enabled: false,
+    id: "updatedAtAttribute",
   },
   {
     name: "Website",
     description: attributeSupports.notSupportedGoogleFacebookAmazon,
     enabled: false,
+    id: "websiteAttribute",
   },
   {
     name: "Zone Info",
     description: attributeSupports.notSupportedGoogleFacebookAmazon,
     enabled: false,
+    id: "zoneInfoAttribute",
   },
 ];
 
@@ -114,18 +150,22 @@ const userOptions = [
   {
     name: "Username",
     description: "Sign-up end users using a Username",
+    id: "userName",
   },
   {
     name: "Email",
     description: "Sign-up end users using an email",
+    id: "email",
   },
   {
     name: "Phone Number",
     description: "Sign-up end users using a phone number ",
+    id: "phoneNumber",
   },
   {
     name: "Email or Phone Number",
     description: "Sign-up end users using either a phone number or email",
+    id: "emailOrPhoneNumber",
   },
 ];
 
@@ -135,10 +175,76 @@ function classNames(...classes) {
 
 export default function Authentication() {
   const [selectedUserOption, setUserOption] = useState(userOptions[1]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [output, setOutput] = useState("");
+  const outputRef = useRef();
+
+  function closeModal() {
+    setIsModalOpen(false);
+  }
+
+  async function handleSubmit(event) {
+    setOutput("");
+    setIsModalOpen(true);
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const body = JSON.stringify(Object.fromEntries(formData));
+
+    const res = await fetch("/api/add-auth", { body, method: "POST" });
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+
+    reader.read().then(function processText({ done, value }) {
+      if (done) {
+        return;
+      }
+
+      setOutput((prev) => prev + `${decoder.decode(value)}\n`);
+
+      outputRef.current.scroll({
+        behavior: "smooth",
+        top: outputRef.current.scrollHeight,
+      });
+
+      return reader.read().then(processText);
+    });
+
+    console.log(body);
+  }
   return (
     <>
-      <section aria-labelledby="option_heading">
-        <form action="#" method="POST">
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        buttons={
+          <>
+            <button
+              type="button"
+              className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+              onClick={closeModal}
+            >
+              Close
+            </button>
+          </>
+        }
+      >
+        <pre
+          ref={outputRef}
+          className="p-6 overflow-y-auto font-mono text-sm subpixel-antialiased text-white bg-gray-800 rounded-md shadow-inner h-96"
+        >
+          {output}
+        </pre>
+      </Modal>
+      <form onSubmit={handleSubmit}>
+        <section aria-labelledby="option_heading">
+          <div className="px-4 py-3 text-right bg-gray-50 sm:px-6">
+            <button
+              type="submit"
+              className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+            >
+              Add Authentication
+            </button>
+          </div>
           <div className="shadow sm:rounded-md sm:overflow-hidden">
             <div className="px-4 py-6 space-y-6 bg-white sm:p-6">
               <div>
@@ -174,6 +280,12 @@ export default function Authentication() {
                     >
                       {({ active, checked }) => (
                         <>
+                          <input
+                            type="hidden"
+                            id={`${option.id}SignIn`}
+                            name={`${option.id}SignIn`}
+                            value={checked}
+                          />
                           <div className="flex items-center text-sm">
                             <span
                               className={classNames(
@@ -211,64 +323,66 @@ export default function Authentication() {
                 </div>
               </RadioGroup>
             </div>
-            {/* <div className="px-4 py-3 text-right bg-gray-50 sm:px-6">
-              <button
-                type="submit"
-                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-              >
-                Save
-              </button>
-            </div> */}
           </div>
-        </form>
-      </section>
-      <Authentication.SocialProviders />
-      <Authentication.Attributes />
+        </section>
+        <Authentication.SocialProviders />
+        <Authentication.Attributes />
+      </form>
     </>
   );
 }
 
 Authentication.SocialProviders = () => {
-  const [socialProvidersEnabled, setSocialProvidersEnabled] = useState(true);
+  const [socialProvidersEnabled, setSocialProvidersEnabled] = useState(false);
   const [enabledList, setEnabledList] = useState(providers);
   return (
-    <section aria-labelledby="option_heading">
-      <form action="#" method="POST">
-        <div className="shadow sm:rounded-md sm:overflow-hidden">
-          <div className="px-4 py-6 space-y-6 bg-white sm:p-6">
-            <div>
-              <h2
-                id="social_provider_heading"
-                className="text-lg font-medium leading-6 text-gray-900"
-              >
-                Would you like to add social providers?
-              </h2>
-            </div>
-            <Switch.Group as="div" className="flex items-center">
-              <Switch
-                checked={socialProvidersEnabled}
-                onChange={setSocialProvidersEnabled}
-                className={classNames(
-                  socialProvidersEnabled ? "bg-orange-500" : "bg-gray-200",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors ease-in-out duration-200"
-                )}
-              >
-                <span className="sr-only">Use setting</span>
-                <span
-                  aria-hidden="true"
-                  className={classNames(
-                    socialProvidersEnabled ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
-                  )}
-                />
-              </Switch>
-              <Switch.Label as="span" className="ml-3">
-                <span className="text-sm font-medium text-gray-900">
-                  Enable Social Providers{" "}
-                </span>
-              </Switch.Label>
-            </Switch.Group>
+    <section aria-labelledby="option_heading" className="mt-10">
+      {/* <form action="#" method="POST"> */}
+      <div className="shadow sm:rounded-md sm:overflow-hidden">
+        <div className="px-4 py-6 space-y-6 bg-white sm:p-6">
+          <div>
+            <h2
+              id="social_provider_heading"
+              className="text-lg font-medium leading-6 text-gray-900"
+            >
+              Would you like to add social providers?
+            </h2>
           </div>
+          <Switch.Group as="div" className="flex items-center">
+            <Switch
+              checked={socialProvidersEnabled}
+              onChange={setSocialProvidersEnabled}
+              className={classNames(
+                socialProvidersEnabled ? "bg-orange-500" : "bg-gray-200",
+                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors ease-in-out duration-200"
+              )}
+            >
+              <span className="sr-only">Use setting</span>
+              <span
+                aria-hidden="true"
+                className={classNames(
+                  socialProvidersEnabled ? "translate-x-5" : "translate-x-0",
+                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                )}
+              />
+            </Switch>
+            <input
+              type="hidden"
+              value={socialProvidersEnabled}
+              name="socialProvidersEnabled"
+              id="socialProvidersEnabled"
+            />
+            <Switch.Label as="span" className="ml-3">
+              <span className="text-sm font-medium text-gray-900">
+                Enable Social Providers{" "}
+              </span>
+            </Switch.Label>
+          </Switch.Group>
+        </div>
+        <fieldset
+          disabled={!socialProvidersEnabled}
+          className={classNames(socialProvidersEnabled ? "" : "opacity-50")}
+        >
           <div className="relative  bg-white rounded-md p-4">
             <div className="relative -space-y-px bg-white rounded-md">
               {providers.map((option, optionIdx) => (
@@ -338,22 +452,6 @@ Authentication.SocialProviders = () => {
                   className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
                 />
               </div>
-
-              {/* <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="email_address"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email address
-                </label>
-                <input
-                  type="text"
-                  name="email_address"
-                  id="email_address"
-                  autoComplete="email"
-                  className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-900 sm:text-sm"
-                />
-              </div> */}
             </div>
 
             {/* Google */}
@@ -462,62 +560,63 @@ Authentication.SocialProviders = () => {
               </div>
             </div>
           </div>
-          {/* <div className="px-4 py-3 text-right bg-gray-50 sm:px-6">
-            <button
-              type="submit"
-              className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-            >
-              Save
-            </button>
-          </div> */}
-        </div>
-      </form>
+        </fieldset>
+      </div>
     </section>
   );
 };
 
 Authentication.Attributes = () => {
-  const [attributesEnabled, setAttributesEnabled] = useState(true);
+  const [attributesEnabled, setAttributesEnabled] = useState(false);
   const [enabledList, setEnabledList] = useState(attributeOptions);
 
   return (
-    <section aria-labelledby="option_heading">
-      <form action="#" method="POST">
-        <div className="shadow sm:rounded-md sm:overflow-hidden">
-          <div className="px-4 py-6 space-y-6 bg-white sm:p-6">
-            <div>
-              <h2
-                id="attribute_heading"
-                className="text-lg font-medium leading-6 text-gray-900"
-              >
-                What attributes are required for signing up?
-              </h2>
-            </div>
-            <Switch.Group as="div" className="flex items-center">
-              <Switch
-                id="attributesSwitch"
-                checked={attributesEnabled}
-                onChange={setAttributesEnabled}
+    <section aria-labelledby="option_heading" className="mt-10">
+      <div className="shadow sm:rounded-md sm:overflow-hidden">
+        <div className="px-4 py-6 space-y-6 bg-white sm:p-6">
+          <div>
+            <h2
+              id="attribute_heading"
+              className="text-lg font-medium leading-6 text-gray-900"
+            >
+              What attributes are required for signing up?
+            </h2>
+          </div>
+          <Switch.Group as="div" className="flex items-center">
+            <Switch
+              id="attributesSwitch"
+              checked={attributesEnabled}
+              onChange={setAttributesEnabled}
+              className={classNames(
+                attributesEnabled ? "bg-orange-500" : "bg-gray-200",
+                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors ease-in-out duration-200"
+              )}
+            >
+              <span className="sr-only">Use setting</span>
+              <span
+                aria-hidden="true"
                 className={classNames(
-                  attributesEnabled ? "bg-orange-500" : "bg-gray-200",
-                  "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors ease-in-out duration-200"
+                  attributesEnabled ? "translate-x-5" : "translate-x-0",
+                  "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
                 )}
-              >
-                <span className="sr-only">Use setting</span>
-                <span
-                  aria-hidden="true"
-                  className={classNames(
-                    attributesEnabled ? "translate-x-5" : "translate-x-0",
-                    "inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
-                  )}
-                />
-              </Switch>
-              <Switch.Label as="span" className="ml-3">
-                <span className="text-sm font-medium text-gray-900">
-                  Enable Attributes{" "}
-                </span>
-              </Switch.Label>
-            </Switch.Group>
+              />
+            </Switch>
+            <input
+              type="hidden"
+              value={attributesEnabled}
+              name="attibutesEnabled"
+              id="attributesEnabled"
+            />
+            <Switch.Label as="span" className="ml-3">
+              <span className="text-sm font-medium text-gray-900">
+                Enable Attributes{" "}
+              </span>
+            </Switch.Label>
+          </Switch.Group>
+          <fieldset
+            disabled={!attributesEnabled}
+            className={classNames(attributesEnabled ? "" : "opacity-40")}
+          >
             <div className="relative -space-y-px bg-white rounded-md">
               {attributeOptions.map((option, optionIdx) => (
                 <React.Fragment key={option.name}>
@@ -549,17 +648,9 @@ Authentication.Attributes = () => {
                 </React.Fragment>
               ))}
             </div>
-          </div>
-          {/* <div className="px-4 py-3 text-right bg-gray-50 sm:px-6">
-            <button
-              type="submit"
-              className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-            >
-              Save
-            </button>
-          </div> */}
+          </fieldset>
         </div>
-      </form>
+      </div>
     </section>
   );
 };
@@ -575,6 +666,8 @@ function TableWrapper({
     <>
       <Switch.Group as="div" className="flex items-center">
         <Switch
+          id={`${enabledList[optionIdx].name}Switch`}
+          name={`${enabledList[optionIdx].name}Switch`}
           checked={enabledList[optionIdx].enabled}
           onChange={(event) => {
             enabledList[optionIdx].enabled = event;
@@ -626,6 +719,12 @@ function TableWrapper({
               )}
               aria-hidden="true"
             >
+              <input
+                type="hidden"
+                name={`${option.id}`}
+                id={`${option.id}`}
+                value={enabledList[optionIdx].enabled}
+              />
               <svg
                 className="bg-white h-3 w-3 text-indigo-600"
                 fill="currentColor"
