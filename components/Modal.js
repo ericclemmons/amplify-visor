@@ -16,8 +16,8 @@ export default function Modal({ isOpen, onClose, children, buttons }) {
           &#8203;
         </span>
 
-        <div className="inline-block w-full max-w-3xl pt-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-md">
-          <div className="pb-6 px-6">{children}</div>
+        <div className="inline-block w-full max-w-5xl pt-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-md shadow-xl">
+          <div className="px-6 pb-6">{children}</div>
           <div className="px-4 py-3 text-right bg-gray-50 sm:px-6">
             {buttons}
           </div>
