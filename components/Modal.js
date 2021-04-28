@@ -18,11 +18,9 @@ export default function Modal({ isOpen, onClose, children, buttons }) {
 
         <div className="inline-block w-full max-w-3xl pt-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-md">
           <div className="pb-6 px-6">{children}</div>
-          {!!buttons && (
-            <div className="px-4 py-3 text-right bg-gray-50 sm:px-6">
-              {buttons}
-            </div>
-          )}
+          <div className="px-4 py-3 text-right bg-gray-50 sm:px-6">
+            {buttons}
+          </div>
         </div>
       </div>
     </Dialog>
