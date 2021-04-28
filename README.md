@@ -25,7 +25,7 @@
    1. If you're testing out the greenfield project creation flow:
 
       ```shell
-      cd /tmp`
+      cd /tmp
       $(yarn global bin)/amplify-visor
       ```
 
