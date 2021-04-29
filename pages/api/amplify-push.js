@@ -1,4 +1,5 @@
 // import { nspawn as spawn } from "../../utils/nexpect";
+import Convert from "ansi-to-html";
 import { spawn } from "child_process";
 
 export default async function addAuth(req, res) {
@@ -37,7 +38,15 @@ export default async function addAuth(req, res) {
   });
 
   pushChanges.stdout.on("data", (data) => {
-    res.write(data);
+    const convert = new Convert({
+      fg: "#eee",
+      bg: "#222",
+      newline: false,
+      escapeXML: true,
+      stream: true,
+    });
+
+    res.write(convert.toHtml(String(data)));
   });
 
   pushChanges.on("close", (code) => {

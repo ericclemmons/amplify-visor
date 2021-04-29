@@ -256,9 +256,8 @@ export default function Authentication({ pkg, cwd = "/tmp", awsExports }) {
           <pre
             ref={outputRef}
             className="p-6 overflow-y-auto font-mono text-sm subpixel-antialiased text-white bg-gray-800 rounded-md shadow-inner h-96"
-          >
-            {output}
-          </pre>
+            dangerouslySetInnerHTML={{ __html: output }}
+          />
         </Modal>
       )}
 
