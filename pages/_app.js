@@ -205,7 +205,7 @@ function MyApp({ Component, pageProps }) {
                 </div>
               </div>
               <nav
-                className="hidden lg:py-2 lg:flex lg:space-x-8"
+                className="hidden lg:py-2 lg:flex lg:space-x-8 lg:hidden"
                 aria-label="Global"
               >
                 {navigation.map((item) => (
@@ -223,7 +223,7 @@ function MyApp({ Component, pageProps }) {
               className="lg:hidden"
               aria-label="Global"
             >
-              <div className="px-2 pt-2 pb-3 space-y-1">
+              <div className="px-2 pt-2 pb-3 space-y-1 hidden">
                 {navigation.map((item) => (
                   <Link key={item.name} href={item.href}>
                     <a className="block px-3 py-2 text-base font-medium text-gray-900 rounded-md hover:bg-gray-50 hover:text-gray-900">
