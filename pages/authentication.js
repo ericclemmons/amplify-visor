@@ -423,7 +423,7 @@ Authentication.SocialProviders = () => {
                 </React.Fragment>
               ))}
             </div>
-            <div className="grid grid-cols-4 gap-6 mt-12">
+            <div className="grid grid-cols-4 gap-6 mt-12 hidden">
               <div className="col-span-4 sm:col-span-2">
                 <label
                   htmlFor="signin_URI"
