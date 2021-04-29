@@ -13,15 +13,9 @@ import { SearchIcon } from "@heroicons/react/solid";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment, useLayoutEffect } from "react";
+import { Fragment, useState, useEffect, useLayoutEffect } from "react";
 import "tailwindcss/tailwind.css";
 
-const user = {
-  name: "Lisa Marie",
-  email: "lisamarie@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=80",
-};
 const navigation = [
   { name: "Dashboard", href: "#" },
   { name: "Jobs", href: "#" },
@@ -55,6 +49,18 @@ function classNames(...classes) {
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
+
+  const [user, setUser] = useState({
+    name: "Lisa Marie",
+    email: "lisamarie@example.com",
+    imageUrl: "https://docs.amplify.aws/assets/logo-dark.svg",
+  });
+
+  useEffect(() => {
+    const res = fetch("/api/get-user-info", { method: "GET" })
+      .then((response) => response.json())
+      .then((data) => setUser(data));
+  }, []);
 
   useLayoutEffect(() => {
     if (!window.docsearch) {
