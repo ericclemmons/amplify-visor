@@ -27,7 +27,7 @@ app.prepare().then(() => {
 
       const refreshRate = 10000;
 
-      process.on("SIGINT", () => {
+      const sendCloseEvent = () => {
         res.write(
           `retry: ${refreshRate}\nid:${++messageId}\ndata: ${JSON.stringify(
             "👋"
@@ -36,7 +36,10 @@ app.prepare().then(() => {
 
         // Give it time to send
         setTimeout(() => process.exit(0), 200);
-      });
+      };
+
+      process.on("SIGINT", sendCloseEvent);
+      process.on("SIGTERM", sendCloseEvent);
 
       setInterval(() => {
         res.write(
