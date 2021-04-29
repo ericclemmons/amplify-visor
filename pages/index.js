@@ -101,7 +101,7 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
 
         setOutput((prev) => prev + `${decoder.decode(value)}\n`);
 
-        outputRef.current.scroll({
+        outputRef.current?.scroll({
           behavior: "smooth",
           top: outputRef.current.scrollHeight,
         });
@@ -110,7 +110,7 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
       });
     }
 
-    submitSteps();
+    await submitSteps();
   }
 
   function closeModal() {
@@ -123,15 +123,13 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
         isOpen={isModalOpen}
         onClose={closeModal}
         buttons={
-          <>
-            <button
-              type="button"
-              className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-              onClick={closeModal}
-            >
-              Close
-            </button>
-          </>
+          <button
+            type="button"
+            className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+            onClick={closeModal}
+          >
+            Close
+          </button>
         }
       >
         <pre
