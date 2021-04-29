@@ -1,16 +1,14 @@
 const execa = require("execa");
 
-const existing = new Map();
-
-// We need this to persist `existing` between the server & API routes. Maybe I'm wrong, but `existing` kept getting reset
-process.custom = existing;
+// We need this to persist `global.childProcesses` between the server & API routes. Maybe I'm wrong, but `global.childProcesses` kept getting reset
+global.childProcesses = new Map();
 
 const memoize = (name, factory) => (...args) => {
-  if (!existing.has(name)) {
-    existing.set(name, factory(...args));
+  if (!global.childProcesses.has(name)) {
+    global.childProcesses.set(name, factory(...args));
   }
 
-  return existing.get(name);
+  return global.childProcesses.get(name);
 };
 
 exports.processes = {
@@ -31,15 +29,17 @@ exports.processes = {
   ),
 
   async kill(name) {
-    if (!existing.has(name)) {
+    if (!global.childProcesses.has(name)) {
       throw new Error(`Process "${name}" has not been started`);
     }
 
-    const child = existing.get(name);
+    const child = global.childProcesses.get(name);
 
     // Note: I don't know that this works, or at least not with CRA!
     await child.cancel();
-    existing.delete(name);
+
+    console.log("Canceled", child);
+    // global.childProcesses.delete(name);
 
     return child;
   },
