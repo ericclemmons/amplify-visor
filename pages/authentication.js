@@ -183,13 +183,15 @@ export default function Authentication({
   const [output, setOutput] = useState("");
   const outputRef = useRef();
 
+  const hasAuth = awsConfig && awsConfig.aws_cognito_region;
+
   function closeModal() {
     setIsModalOpen(false);
   }
 
   const authSteps = [
     {
-      enabled: awsConfig && !awsConfig.aws_cognito_region,
+      enabled: !hasAuth,
       title: "Create Auth",
       url: "/api/add-auth",
     },
@@ -274,7 +276,7 @@ export default function Authentication({
               type="submit"
               className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
             >
-              {awsExports ? "Update" : "Add"} Authentication
+              {hasAuth ? "Update" : "Add"} Authentication
             </button>
           </div>
           <div className="shadow sm:rounded-md sm:overflow-hidden">
