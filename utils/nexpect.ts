@@ -51,6 +51,8 @@ export type Context = {
 };
 
 export type ExecutionContext = {
+  context: Context;
+
   expect: (expectation: string | RegExp) => ExecutionContext;
   pauseRecording: () => ExecutionContext;
   resumeRecording: () => ExecutionContext;
@@ -81,6 +83,9 @@ export type SpawnOptions = {
 
 function chain(context: Context): ExecutionContext {
   return {
+    // Pass this back in-case context.process needs to be hooked into
+    context,
+
     pauseRecording: (): ExecutionContext => {
       let _pauseRecording: ExecutionStep = {
         fn: () => {

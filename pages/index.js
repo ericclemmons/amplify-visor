@@ -73,6 +73,11 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
         title: "Install Amplify Dependencies",
         url: "/api/install-amplify-deps",
       },
+      {
+        enabled: true,
+        title: "Bootstrap Amplify in the App",
+        url: "/api/codemod-amplify",
+      },
     ].filter((step) => step.enabled);
 
     const formData = new FormData(event.target);
@@ -86,18 +91,13 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
       const decoder = new TextDecoder("utf-8");
 
       reader.read().then(async function processText({ done, value }) {
-        console.log({ done, step });
         if (done) {
-          console.log({ step });
           if (createProjectSteps[step + 1]) {
-            console.log("next step");
-            await submitSteps(step + 1);
+            return await submitSteps(step + 1);
           }
 
           // This way we can pull in the latest `pkg` data from getServerSideProps
-          window.location.reload();
-
-          return;
+          return window.location.reload();
         }
 
         setOutput((prev) => prev + `${decoder.decode(value)}\n`);
@@ -138,9 +138,8 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
         <pre
           ref={outputRef}
           className="p-6 overflow-y-auto font-mono text-sm subpixel-antialiased text-white bg-gray-800 rounded-md shadow-inner h-96"
-        >
-          {output}
-        </pre>
+          dangerouslySetInnerHTML={{ __html: output }}
+        />
       </Modal>
       <form onChange={handleChange} onSubmit={handleSubmit}>
         <div className="shadow sm:rounded-md sm:overflow-hidden">
@@ -332,10 +331,18 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
 
 export async function getServerSideProps(context) {
   let awsExports = null;
+  let awsConfig = null;
   let pkg = null;
 
   try {
-    awsExports = await readFile("src/aws-exports.js");
+    // This may or may not have valid JSON inside
+    awsExports = await readFile("src/aws-exports.js", "utf8");
+
+    const [, start] = awsExports.split("const awsmobile =");
+    const [rawConfig] = start.split(";\n\n");
+
+    // Valid JSON!
+    awsConfig = JSON.parse(rawConfig.trim());
   } catch (error) {}
 
   try {
@@ -344,6 +351,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      awsConfig,
       awsExports,
       cwd: process.cwd(),
       pkg,
