@@ -62,7 +62,7 @@ export type ExecutionContext = {
   ) => ExecutionContext;
   sendLine: (line: string) => ExecutionContext;
   sendCarriageReturn: () => ExecutionContext;
-  send: (line: string) => ExecutionContext;
+  send: (line: string, times: number) => ExecutionContext;
   sendKeyDown: (repeat?: number) => ExecutionContext;
   sendKeyUp: (repeat?: number) => ExecutionContext;
   sendConfirmYes: () => ExecutionContext;
@@ -178,10 +178,11 @@ function chain(context: Context): ExecutionContext {
         description: "[sendline] <CR>",
         requiresInput: false,
       };
+
       context.queue.push(_sendline);
       return chain(context);
     },
-    send: function (line: string): ExecutionContext {
+    send: function (line: string, times = 1): ExecutionContext {
       var _send: ExecutionStep = {
         fn: () => {
           context.process.write(line);
@@ -192,7 +193,9 @@ function chain(context: Context): ExecutionContext {
         description: `[send] ${line}`,
         requiresInput: false,
       };
-      context.queue.push(_send);
+      [...Array(times)].forEach((_, i) => context.queue.push(_send));
+
+      // context.queue.push(_send);
       return chain(context);
     },
     sendKeyDown: function (repeat?: number): ExecutionContext {

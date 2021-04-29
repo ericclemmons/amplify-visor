@@ -173,7 +173,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Authentication() {
+export default function Authentication({ pkg, cwd = "/tmp", awsExports }) {
   const [selectedUserOption, setUserOption] = useState(userOptions[1]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [output, setOutput] = useState("");
@@ -183,33 +183,57 @@ export default function Authentication() {
     setIsModalOpen(false);
   }
 
+  const authSteps = [
+    {
+      enabled: true,
+      title: "Create Auth",
+      url: "/api/add-auth",
+    },
+    {
+      enabled: true,
+      title: "Amplify Push",
+      url: "/api/amplify-push",
+    },
+  ].filter((step) => step.enabled);
+
   async function handleSubmit(event) {
     setOutput("");
     setIsModalOpen(true);
     event.preventDefault();
     const formData = new FormData(event.target);
-    const body = JSON.stringify(Object.fromEntries(formData));
+    const body = JSON.stringify({ ...Object.fromEntries(formData), cwd });
+    console.log(pkg, cwd, awsExports);
+    const method = "POST";
 
-    const res = await fetch("/api/add-auth", { body, method: "POST" });
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder("utf-8");
+    async function submitSteps(step = 0) {
+      const res = await fetch(authSteps[step].url, { body, method });
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder("utf-8");
 
-    reader.read().then(function processText({ done, value }) {
-      if (done) {
-        return;
-      }
+      reader.read().then(async function processText({ done, value }) {
+        console.log({ done, step });
+        if (done) {
+          console.log({ step });
+          if (authSteps[step + 1]) {
+            console.log("next step");
+            await submitSteps(step + 1);
+          }
 
-      setOutput((prev) => prev + `${decoder.decode(value)}\n`);
+          return;
+        }
 
-      outputRef.current?.scroll({
-        behavior: "smooth",
-        top: outputRef.current.scrollHeight,
+        setOutput((prev) => prev + `${decoder.decode(value)}\n`);
+
+        outputRef.current.scroll({
+          behavior: "smooth",
+          top: outputRef.current.scrollHeight,
+        });
+
+        return reader.read().then(await processText);
       });
-
-      return reader.read().then(processText);
-    });
-
+    }
     console.log(body);
+    submitSteps();
   }
   return (
     <>
@@ -766,4 +790,25 @@ function TableWrapper({
       {children}
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  let awsExports = null;
+  let pkg = null;
+
+  try {
+    awsExports = await readFile("src/aws-exports.js");
+  } catch (error) {}
+
+  try {
+    pkg = JSON.parse(await readFile("package.json", "utf8"));
+  } catch (error) {}
+
+  return {
+    props: {
+      awsExports,
+      cwd: process.cwd(),
+      pkg,
+    },
+  };
 }
