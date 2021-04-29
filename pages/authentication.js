@@ -792,23 +792,4 @@ function TableWrapper({
   );
 }
 
-export async function getServerSideProps(context) {
-  let awsExports = null;
-  let pkg = null;
-
-  try {
-    awsExports = await readFile("src/aws-exports.js");
-  } catch (error) {}
-
-  try {
-    pkg = JSON.parse(await readFile("package.json", "utf8"));
-  } catch (error) {}
-
-  return {
-    props: {
-      awsExports,
-      cwd: process.cwd(),
-      pkg,
-    },
-  };
-}
+export { getServerSideProps } from "../utils/getServerSideProps";
