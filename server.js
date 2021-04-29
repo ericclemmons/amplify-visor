@@ -1,8 +1,8 @@
-const execa = require("execa");
 const { createServer } = require("http");
 const next = require("next");
 const { parse } = require("url");
 const waitForLocalhost = require("wait-for-localhost");
+
 const { processes } = require("./utils/processes");
 
 const dev = true; // process.env.NODE_ENV !== "production";
@@ -16,12 +16,37 @@ app.prepare().then(() => {
   const server = createServer((req, res) => {
     const parsedUrl = parse(req.url, true);
     const { pathname, query } = parsedUrl;
+    let messageId = parseInt(req.headers["Last-Event-ID"], 10) || 0;
+
+    if (pathname === "/events") {
+      res.writeHead(200, {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      });
+
+      const refreshRate = 10000;
+
+      setInterval(() => {
+        res.write(
+          `retry: ${refreshRate}\nid:${++messageId}\ndata: ${JSON.stringify(
+            "❤️"
+          )}\n\n`
+        );
+      }, refreshRate);
+
+      return res.write(
+        `retry: ${refreshRate}\nid:${++messageId}\ndata: ${JSON.stringify(
+          "✅"
+        )}\n\n`
+      );
+    }
 
     if (pathname === "/some-custom-path") {
-      handle(req, res);
-    } else {
-      handle(req, res, parsedUrl);
+      return handle(req, res);
     }
+
+    return handle(req, res, parsedUrl);
   });
 
   server.listen(PORT, async (err) => {

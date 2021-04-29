@@ -57,6 +57,20 @@ function MyApp({ Component, pageProps }) {
   });
 
   useEffect(() => {
+    const event = new EventSource("/events");
+
+    // Server started
+    event.addEventListener("message", (message) => {
+      // console.log(message);
+    });
+
+    // Server shut down
+    event.addEventListener("error", (error) => {
+      window.close();
+    });
+  }, []);
+
+  useEffect(() => {
     const res = fetch("/api/get-user-info", { method: "GET" })
       .then((response) => response.json())
       .then((data) => setUser(data));
