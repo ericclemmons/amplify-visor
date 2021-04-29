@@ -101,7 +101,7 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
 
         setOutput((prev) => prev + `${decoder.decode(value)}\n`);
 
-        outputRef.current.scroll({
+        outputRef.current?.scroll({
           behavior: "smooth",
           top: outputRef.current.scrollHeight,
         });
