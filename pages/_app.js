@@ -1,8 +1,12 @@
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   BellIcon,
+  ChatIcon,
+  ChatAlt2Icon,
+  ChipIcon,
   CogIcon,
   CreditCardIcon,
+  DatabaseIcon,
   KeyIcon,
   MenuIcon,
   UserCircleIcon,
@@ -36,11 +40,11 @@ const subNavigation = [
     icon: KeyIcon,
   },
   { name: "Data", href: "/data", icon: ViewGridAddIcon },
-  { name: "Interactions", href: "#", icon: CreditCardIcon },
-  { name: "Predictions", href: "#", icon: CreditCardIcon },
-  { name: "PubSub", href: "#", icon: CreditCardIcon },
+  { name: "Interactions", href: "#", icon: ChatIcon },
+  { name: "Predictions", href: "#", icon: ChipIcon },
+  { name: "PubSub", href: "#", icon: ChatAlt2Icon },
   { name: "Push Notifications", href: "#", icon: BellIcon },
-  { name: "Storage", href: "#", icon: CreditCardIcon },
+  { name: "Storage", href: "#", icon: DatabaseIcon },
 ];
 
 function classNames(...classes) {
