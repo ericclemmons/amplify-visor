@@ -60,14 +60,14 @@ function MyApp({ Component, pageProps }) {
     const event = new EventSource("/events");
 
     // Server started
-    event.addEventListener("message", (message) => {
-      // console.log(message);
+    event.addEventListener("message", ({ data }) => {
+      const json = JSON.parse(data);
+
+      if (json === "👋") window.close();
     });
 
     // Server shut down
-    event.addEventListener("error", (error) => {
-      window.close();
-    });
+    // event.addEventListener("error", (error) => event.close())
   }, []);
 
   useEffect(() => {
@@ -243,7 +243,7 @@ function MyApp({ Component, pageProps }) {
               className="lg:hidden"
               aria-label="Global"
             >
-              <div className="px-2 pt-2 pb-3 space-y-1 hidden">
+              <div className="hidden px-2 pt-2 pb-3 space-y-1">
                 {navigation.map((item) => (
                   <Link key={item.name} href={item.href}>
                     <a className="block px-3 py-2 text-base font-medium text-gray-900 rounded-md hover:bg-gray-50 hover:text-gray-900">

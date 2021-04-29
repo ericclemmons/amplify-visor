@@ -27,6 +27,17 @@ app.prepare().then(() => {
 
       const refreshRate = 10000;
 
+      process.on("SIGINT", () => {
+        res.write(
+          `retry: ${refreshRate}\nid:${++messageId}\ndata: ${JSON.stringify(
+            "👋"
+          )}\n\n`
+        );
+
+        // Give it time to send
+        setTimeout(() => process.exit(0), 200);
+      });
+
       setInterval(() => {
         res.write(
           `retry: ${refreshRate}\nid:${++messageId}\ndata: ${JSON.stringify(
@@ -37,7 +48,7 @@ app.prepare().then(() => {
 
       return res.write(
         `retry: ${refreshRate}\nid:${++messageId}\ndata: ${JSON.stringify(
-          "✅"
+          "🚀"
         )}\n\n`
       );
     }
