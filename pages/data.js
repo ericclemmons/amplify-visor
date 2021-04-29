@@ -36,10 +36,21 @@ const schemaMachine = Machine(
             },
           },
 
+          push: {
+            invoke: {
+              src: "push",
+              onDone: "idle",
+              onError: {
+                actions: "assignError",
+                target: "idle",
+              },
+            },
+          },
+
           saving: {
             invoke: {
               src: "saveSchema",
-              onDone: "idle",
+              onDone: "push",
               onError: {
                 actions: "assignError",
                 target: "idle",
@@ -86,6 +97,16 @@ const schemaMachine = Machine(
         throw new Error(await res.text());
       },
 
+      async push(context, event) {
+        const res = await fetch("/api/amplify-push", { method: "POST" });
+
+        if (res.ok) {
+          return await res.text();
+        }
+
+        throw new Error(await res.text());
+      },
+
       async saveSchema(context, event) {
         const { appId } = context;
 
@@ -96,7 +117,7 @@ const schemaMachine = Machine(
         });
 
         if (res.ok) {
-          return await res.json();
+          return await res.text();
         }
 
         throw new Error(await res.text());
@@ -108,6 +129,8 @@ const schemaMachine = Machine(
 export default function Data() {
   const [state, send] = useMachine(schemaMachine);
   const { error, url } = state.context;
+
+  console.log(state);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -188,3 +211,5 @@ export default function Data() {
     </section>
   );
 }
+
+export { getServerSideProps } from "../utils/getServerSideProps";
