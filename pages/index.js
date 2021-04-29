@@ -1,5 +1,4 @@
 import { Switch } from "@headlessui/react";
-import { readFile } from "fs/promises";
 import { kebabCase } from "lodash";
 import { useState, useRef, useEffect } from "react";
 import { ExternalLinkIcon } from "@heroicons/react/outline";
