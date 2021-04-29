@@ -294,7 +294,7 @@ export default function Authentication({
                 <RadioGroup.Label className="sr-only">
                   User Sign In Options
                 </RadioGroup.Label>
-                <div className="relative -space-y-px bg-white rounded-md">
+                <div className="-space-y-px bg-white rounded-md">
                   {userOptions.map((option, optionIdx) => (
                     <RadioGroup.Option
                       key={option.name}
@@ -308,7 +308,7 @@ export default function Authentication({
                           checked
                             ? "bg-indigo-50 border-indigo-200 z-10"
                             : "border-gray-200",
-                          "relative border p-4 flex flex-col cursor-pointer md:pl-4 md:pr-6 md:grid md:grid-cols-2 focus:outline-none"
+                          "border p-4 flex flex-col cursor-pointer md:pl-4 md:pr-6 md:grid md:grid-cols-2 focus:outline-none"
                         )
                       }
                     >
