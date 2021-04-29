@@ -2,7 +2,7 @@ import { Switch } from "@headlessui/react";
 import { readFile } from "fs/promises";
 import { kebabCase } from "lodash";
 import { useState, useRef, useEffect } from "react";
-import { ExternalLinkIcon } from "@heroicons/react/solid";
+import { ExternalLinkIcon } from "@heroicons/react/outline";
 
 import Modal from "../components/Modal";
 
@@ -149,12 +149,12 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
               <h3 className="text-lg font-medium leading-6 text-gray-900">
                 {pkg ? (
                   <button
-                    className="flex text-indigo-700 underline"
+                    className="flex items-center text-indigo-700 underline"
                     onClick={openInIDE}
                     type="button"
                   >
                     {pkg.name}
-                    <ExternalLinkIcon className="w-6 h-6" />
+                    <ExternalLinkIcon className="w-4 h-4 ml-1" />
                   </button>
                 ) : (
                   "New Project"
