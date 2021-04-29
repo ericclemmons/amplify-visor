@@ -19,18 +19,18 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [output, setOutput] = useState("");
   const [changed, setChanged] = useState(defaultValues);
-  const [enabled, setEnabled] = useState(pkg ? true : undefined);
+  const [started, setStarted] = useState(undefined);
 
   useEffect(() => {
     // Only fire if it's been explicitly set
-    if (enabled === undefined) return;
+    if (started === undefined) return;
 
-    fetch(enabled ? "/api/start-project" : "/api/stop-project", {
+    fetch(started ? "/api/start-project" : "/api/stop-project", {
       method: "POST",
     }).then(() => {
-      if (!enabled) window.close();
+      if (!started) window.close();
     });
-  }, [enabled]);
+  }, [started]);
 
   function handleChange(event) {
     let { checked, name, type, value } = event.target;
@@ -164,10 +164,10 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
               <div className="mt-3 sm:mt-0 sm:ml-4">
                 {pkg && (
                   <Switch
-                    checked={enabled}
-                    onChange={setEnabled}
+                    checked={started}
+                    onChange={setStarted}
                     className={classNames(
-                      enabled ? "bg-indigo-600" : "bg-gray-200",
+                      started ? "bg-green-400" : "bg-gray-200",
                       "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     )}
                   >
@@ -175,7 +175,7 @@ export default function Project({ awsExports, cwd = "/tmp", pkg }) {
                     <span
                       aria-hidden="true"
                       className={classNames(
-                        enabled ? "translate-x-5" : "translate-x-0",
+                        started ? "translate-x-5" : "translate-x-0",
                         "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
                       )}
                     />
