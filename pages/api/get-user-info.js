@@ -1,13 +1,11 @@
-import md5 from "md5";
+import crypto from "crypto";
 import execa from "execa";
-
-import { processes } from "../../utils/processes";
 
 export default async function startProject(req, res) {
   try {
     const { stdout: name } = await execa("git", ["config", "user.name"]);
     const { stdout: email } = await execa("git", ["config", "user.email"]);
-    const emailHash = md5(email);
+    const emailHash = crypto.createHash("md5").update(email).digest("hex");
     const userInfo = {
       name,
       email,
