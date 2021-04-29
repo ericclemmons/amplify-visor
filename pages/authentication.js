@@ -173,7 +173,11 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Authentication({ pkg, cwd = "/tmp", awsExports }) {
+export default function Authentication({
+  cwd = "/tmp",
+  awsExports,
+  awsConfig,
+}) {
   const [selectedUserOption, setUserOption] = useState(userOptions[1]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [output, setOutput] = useState("");
@@ -185,7 +189,7 @@ export default function Authentication({ pkg, cwd = "/tmp", awsExports }) {
 
   const authSteps = [
     {
-      enabled: true,
+      enabled: awsConfig && !awsConfig.aws_cognito_region,
       title: "Create Auth",
       url: "/api/add-auth",
     },
@@ -193,6 +197,11 @@ export default function Authentication({ pkg, cwd = "/tmp", awsExports }) {
       enabled: true,
       title: "Amplify Push",
       url: "/api/amplify-push",
+    },
+    {
+      enabled: true,
+      title: "Add Authentication to App",
+      url: "/codemod-auth",
     },
   ].filter((step) => step.enabled);
 
@@ -202,7 +211,7 @@ export default function Authentication({ pkg, cwd = "/tmp", awsExports }) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const body = JSON.stringify({ ...Object.fromEntries(formData), cwd });
-    console.log(pkg, cwd, awsExports);
+
     const method = "POST";
 
     async function submitSteps(step = 0) {
@@ -211,12 +220,9 @@ export default function Authentication({ pkg, cwd = "/tmp", awsExports }) {
       const decoder = new TextDecoder("utf-8");
 
       reader.read().then(async function processText({ done, value }) {
-        console.log({ done, step });
         if (done) {
-          console.log({ step });
           if (authSteps[step + 1]) {
-            console.log("next step");
-            await submitSteps(step + 1);
+            return await submitSteps(step + 1);
           }
 
           return;
@@ -232,7 +238,7 @@ export default function Authentication({ pkg, cwd = "/tmp", awsExports }) {
         return reader.read().then(await processText);
       });
     }
-    console.log(body);
+
     submitSteps();
   }
   return (
@@ -268,7 +274,7 @@ export default function Authentication({ pkg, cwd = "/tmp", awsExports }) {
               type="submit"
               className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
             >
-              Add Authentication
+              {awsExports ? "Update" : "Add"} Authentication
             </button>
           </div>
           <div className="shadow sm:rounded-md sm:overflow-hidden">
@@ -409,7 +415,7 @@ Authentication.SocialProviders = () => {
           disabled={!socialProvidersEnabled}
           className={classNames(socialProvidersEnabled ? "" : "opacity-50")}
         >
-          <div className="relative  bg-white rounded-md p-4">
+          <div className="relative p-4 bg-white rounded-md">
             <div className="relative -space-y-px bg-white rounded-md">
               {providers.map((option, optionIdx) => (
                 <React.Fragment key={option.name}>
@@ -446,7 +452,7 @@ Authentication.SocialProviders = () => {
                 </React.Fragment>
               ))}
             </div>
-            <div className="grid grid-cols-4 gap-6 mt-12 hidden">
+            <div className="grid hidden grid-cols-4 gap-6 mt-12">
               <div className="col-span-4 sm:col-span-2">
                 <label
                   htmlFor="signin_URI"
@@ -742,7 +748,7 @@ function TableWrapper({
               aria-hidden="true"
             >
               <svg
-                className="bg-white h-3 w-3 text-gray-400"
+                className="w-3 h-3 text-gray-400 bg-white"
                 fill="none"
                 viewBox="0 0 12 12"
               >
@@ -771,7 +777,7 @@ function TableWrapper({
                 defaultValue={enabledList[optionIdx].enabled}
               />
               <svg
-                className="bg-white h-3 w-3 text-indigo-600"
+                className="w-3 h-3 text-indigo-600 bg-white"
                 fill="currentColor"
                 viewBox="0 0 12 12"
               >
