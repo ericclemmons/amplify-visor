@@ -203,7 +203,7 @@ export default function Authentication({
     {
       enabled: true,
       title: "Add Authentication to App",
-      url: "/codemod-auth",
+      url: "/api/codemod-auth",
     },
   ].filter((step) => step.enabled);
 
@@ -263,7 +263,7 @@ export default function Authentication({
         >
           <pre
             ref={outputRef}
-            className="p-6 overflow-y-auto font-mono text-sm subpixel-antialiased text-white bg-gray-800 rounded-md shadow-inner h-96"
+            className="p-6 overflow-y-auto font-mono text-sm subpixel-antialiased text-gray-200 bg-gray-800 rounded-md shadow-inner h-96"
             dangerouslySetInnerHTML={{ __html: output }}
           />
         </Modal>

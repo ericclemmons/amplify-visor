@@ -1,7 +1,8 @@
 import { readFile, writeFile } from "fs/promises";
 
 export default async function codemodAmplify(req, res) {
-  const source = await readFile("src/index.js", "utf8");
+  const file = "src/index.js";
+  const source = await readFile(file, "utf8");
 
   if (source.includes("Amplify.configure")) {
     return res.status(200).send("Amplify is already configured");
@@ -21,7 +22,7 @@ Amplify.configure(awsConfig);
     )
     .concat(source.substring(index));
 
-  await writeFile("src/index.js", updated, "utf8");
+  await writeFile(file, updated, "utf8");
 
-  res.status(200).send(updated);
+  res.status(200).send(`Updated ${file}`);
 }

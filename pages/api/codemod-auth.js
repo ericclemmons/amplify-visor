@@ -29,5 +29,5 @@ export default withAuthenticator(App);
 
   await writeFile(file, updated, "utf8");
 
-  res.status(200).send(updated);
+  res.status(200).send(`Updated ${file}`);
 }
