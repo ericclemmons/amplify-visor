@@ -1,4 +1,4 @@
-# Amplify Visor – 🥇 2021 AWS Amplpify Hackathon Entry
+# Amplify Visor – 🥇 2021 AWS Amplify Hackathon Entry
 
 **NOTE – This is a prototype and not an official AWS Amplify project.**
 
@@ -18,11 +18,30 @@
 
 ### New Amplify Projects
 
-> TODO
+#### Creating a Project
+![Screen Shot 2021-04-29 at 1 43 32 PM](https://user-images.githubusercontent.com/15182/137386598-6b4c147d-6baa-460d-8e83-9ce6c2904cf4.png)
+
+### Local Docs Search
+
+![Screen Shot 2021-04-29 at 1 43 36 PM](https://user-images.githubusercontent.com/15182/137386603-fc94c51a-c132-42ff-a960-6f18830e0c7f.png)
 
 ### Existing Amplify Projects
 
-> TODO
+#### Running/Updating a Project
+
+```shell
+$ amplify visor
+```
+
+![Screen Shot 2021-04-29 at 1 44 14 PM](https://user-images.githubusercontent.com/15182/137386616-c5b35faa-2b17-44a7-9d48-8ce64f7f5304.png)
+
+#### Adding Authentication
+
+![Screen Shot 2021-04-29 at 1 44 24 PM](https://user-images.githubusercontent.com/15182/137386624-d3735dd6-4eea-4cc5-b008-6c33dc38dc84.png)
+
+#### Adding an API
+
+![Screen Shot 2021-04-29 at 1 44 38 PM](https://user-images.githubusercontent.com/15182/137386633-9517878a-099c-4311-97d6-d954e189abfb.png)
 
 ## Authors
 
