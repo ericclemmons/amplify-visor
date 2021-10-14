@@ -60,5 +60,5 @@ $ amplify visor
 * Tre Ammatuna [@TreTuna](https://github.com/tretuna)
 * Eric Clemmons [@ericclemmons](https://github.com/ericclemmons)
 * Erik Hanchett [@ErikCH](https://github.com/erikch)
-* Michael Savoia 
+* Michael Savoia [https://twitter.com/MichaelSavoia](@MichaelSavoia)
 
