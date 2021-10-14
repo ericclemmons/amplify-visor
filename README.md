@@ -43,6 +43,16 @@ $ amplify visor
 
 ![Screen Shot 2021-04-29 at 1 44 38 PM](https://user-images.githubusercontent.com/15182/137386633-9517878a-099c-4311-97d6-d954e189abfb.png)
 
+### Updating Source Code
+
+#### Configuring Amplify
+
+![Screen Shot 2021-04-29 at 1 52 01 PM](https://user-images.githubusercontent.com/15182/137387614-48da7ef2-519e-49d8-805e-62ca5776387a.png)
+
+#### Adding an Authenticator Component
+
+![Screen Shot 2021-04-29 at 1 53 02 PM](https://user-images.githubusercontent.com/15182/137387620-c1f1dc58-19f4-4b4d-90ae-2dde774a1592.png)
+
 ## Authors
 
 (In alphabetical order by surname)
